@@ -9,12 +9,12 @@ public class GroupCreationTests extends GroupHelper {
    */
   public void testNonEmptyGroupCreation() throws Exception {
 	openMainPage();
-    openGroupsList();
+    clickGroupsList();
     clickNewGroup();
     ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
     fillForm(group);
     clickSubmitGroup();
-    openGroupsList();
+    clickGroupsList();
   }
   
   @Test
@@ -23,12 +23,12 @@ public class GroupCreationTests extends GroupHelper {
    */
   public void testEmptyGroupCreation() throws Exception {
 	openMainPage();
-    openGroupsList();
+    clickGroupsList();
     clickNewGroup();
     ObjGroup group = new ObjGroup("", "", "");
     fillForm(group);
     clickSubmitGroup();
-    openGroupsList();
+    clickGroupsList();
   }
   
 }

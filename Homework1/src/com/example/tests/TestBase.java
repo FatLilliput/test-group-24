@@ -1,3 +1,7 @@
+/*
+ * This class contains methods needed for correctly autotests work 
+ * and common methods for all application's modules
+ */
 package com.example.tests;
 
 import static org.junit.Assert.fail;
@@ -9,7 +13,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
@@ -31,18 +39,38 @@ public class TestBase {
 		driver.findElement(By.name(name)).clear();
 	    driver.findElement(By.name(name)).sendKeys(value);
 	  }
+	
+	protected void selectElement(String name, String value) {
+		if (value == null) {
+			return;
+		}
+		new Select(driver.findElement(By.name(name))).selectByVisibleText(value);
+	  }
 
-	protected void openGroupsList() {
+	protected void clickGroupsList() {
 	    driver.findElement(By.linkText("groups")).click();
+	  }
+	
+	protected void clickMainPage() {
+	    driver.findElement(By.linkText("home")).click();
+	  }
+	
+	protected void clickAddNew() {
+	    driver.findElement(By.linkText("add new")).click();
 	  }
 
 	protected void openMainPage() {
-	    driver.get(baseUrl + "/index.php");
+	    driver.get(baseUrl + "index.php");
 	  }
 
 	protected void clickButton(String name) {
 		driver.findElement(By.name(name)).click();
 	  }
+	
+	protected void wait(Long time, String id) {
+		WebDriverWait wait = new WebDriverWait(driver, time);
+		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.id(id)));
+	}
 
 	@AfterTest
 	public void tearDown() throws Exception {

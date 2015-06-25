@@ -7,15 +7,9 @@
         <methods>
           <include name="setUp"/>
           <include name="tearDown"/>
-          <include name="testNonEmptyGroupCreation"/>
+          <include name="testAddEmptyContact"/>
         </methods>
       </class> <!-- com.example.tests.ContactsCreationTests -->
-      <class name="com.example.tests.GroupCreationTests">
-        <methods>
-          <include name="tearDown"/>
-          <include name="setUp"/>
-        </methods>
-      </class> <!-- com.example.tests.GroupCreationTests -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

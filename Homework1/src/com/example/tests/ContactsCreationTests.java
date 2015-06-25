@@ -1,45 +1,45 @@
 /*
- * ContactsCreation class will contain tests for contacts creation only
- * There are list of todos for Homework 2 below:
- * TODO: Remove testNonEmptyGroupCreation() and testEmptyGroupCreation()
- * TODO: Add testNonEmptyContactCreation() and testEmptyContactCreation()
- * TODO: Add ContactHeper class and make ContactsCreationTestsextending it
+ * ContactsCreation class contains 2 tests for contacts creation:
+ * - Correct contact creation
+ * - Creating contact with empty parameters
  */
 package com.example.tests;
 
 import org.testng.annotations.Test;
 
-public class ContactsCreationTests extends GroupHelper {
+public class ContactsCreationTests extends ContactHelper {
 
-  @Test
-  /**
-   * Add new group test
-   */
-  public void testNonEmptyGroupCreation() throws Exception {
-	openMainPage();
-    openGroupsList();
-    clickNewGroup();
-    ObjGroup group = new ObjGroup();
-    group.name = "Group2";
-    group.header = "Header2";
-    group.footer = "Footer2";
-    fillForm(group);
-    clickSubmitGroup();
-    openGroupsList();
-  }
+	@Test
+	public void testAddNonEmptyContact() throws Exception {
+		openMainPage();
+		clickAddNew();
+		ObjContact contact = new ObjContact();
+		contact.firstName = "Name 1";
+		contact.lastName = "Soname 1";
+		contact.address = "123456 Contry City Address 1 1";
+		contact.home = "123 45 67";
+		contact.mobile = "8 123 456 78 90";
+		contact.work = "234657";
+		contact.email1 = "e@mail.com";
+		contact.email2 = "e@mail.ru";
+		contact.birthDay = "1";
+		contact.birthMonth = "January";
+		contact.birthYear = "1975";
+		contact.address2 = "987654 Contry2 City2 Street2 2 22";
+		contact.phone2 = "Sweet Home 123";
+		fillForm(contact);
+		clickSubmitContact();
+		clickMainPage();
+	}
+	
+	@Test
+	public void testAddEmptyContact() throws Exception {
+		openMainPage();
+		clickAddNew();
+		ObjContact contact = new ObjContact();
+		fillForm(contact);		
+		clickSubmitContact();		
+		clickMainPage();
+	}
   
-  @Test
-  /**
-   * Add new group with empty values test
-   */
-  public void testEmptyGroupCreation() throws Exception {
-	openMainPage();
-    openGroupsList();
-    clickNewGroup();
-    ObjGroup group = new ObjGroup("", "", "");
-    fillForm(group);
-    clickSubmitGroup();
-    openGroupsList();
-  }
-
 }
