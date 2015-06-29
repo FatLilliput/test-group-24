@@ -4,15 +4,14 @@
  * - Creating contact with empty parameters
  */
 package com.example.tests;
-
 import org.testng.annotations.Test;
 
-public class ContactsCreationTests extends ContactHelper {
+public class ContactsCreationTests extends TestBase {
 
 	@Test
 	public void testAddNonEmptyContact() throws Exception {
-		openMainPage();
-		clickAddNew();
+		app.getNavigationHelper().openMainPage();
+		app.getContactHelper().clickAddNew();
 		ObjContact contact = new ObjContact();
 		contact.firstName = "Name 1";
 		contact.lastName = "Soname 1";
@@ -27,19 +26,19 @@ public class ContactsCreationTests extends ContactHelper {
 		contact.birthYear = "1975";
 		contact.address2 = "987654 Contry2 City2 Street2 2 22";
 		contact.phone2 = "Sweet Home 123";
-		fillForm(contact);
-		clickSubmitContact();
-		clickMainPage();
+		app.getContactHelper().fillForm(contact);
+		app.getContactHelper().clickSubmitContact();
+		app.getNavigationHelper().clickMainPage();
 	}
 	
 	@Test
 	public void testAddEmptyContact() throws Exception {
-		openMainPage();
-		clickAddNew();
+		app.getNavigationHelper().openMainPage();
+		app.getContactHelper().clickAddNew();
 		ObjContact contact = new ObjContact();
-		fillForm(contact);		
-		clickSubmitContact();		
-		clickMainPage();
+		app.getContactHelper().fillForm(contact);		
+		app.getContactHelper().clickSubmitContact();		
+		app.getNavigationHelper().clickMainPage();
 	}
   
 }

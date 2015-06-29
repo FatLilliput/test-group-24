@@ -3,15 +3,24 @@
  * Right now there are only contacts creation tests are implemented. 
  * All the other contact test classes should extend ContactHelper
  */
-package com.example.tests;
+package com.example.fw;
+import com.example.tests.ObjContact;
 
-public class ContactHelper extends TestBase{
+public class ContactHelper extends BaseHelper {
 
-	protected void clickSubmitContact() {
+	public ContactHelper(ApplicationManager manager) {
+		super(manager);
+	}
+	
+	public void clickAddNew() {
+	    clickLinkText("add new");
+	}
+
+	public void clickSubmitContact() {
 		clickButton("submit");
 	}
 
-	protected void fillForm(ObjContact contact) {
+	public void fillForm(ObjContact contact) {
 		fillElement  ("firstname", contact.firstName);
 		fillElement  ("lastname",  contact.lastName);
 		fillElement  ("address",   contact.address);

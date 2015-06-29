@@ -2,33 +2,28 @@ package com.example.tests;
 
 import org.testng.annotations.Test;
 
-public class GroupCreationTests extends GroupHelper {
-  @Test
-  /**
-   * Add new group test
-   */
-  public void testNonEmptyGroupCreation() throws Exception {
-	openMainPage();
-    clickGroupsList();
-    clickNewGroup();
-    ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
-    fillForm(group);
-    clickSubmitGroup();
-    clickGroupsList();
-  }
+public class GroupCreationTests extends TestBase {
+
+	@Test
+	public void testNonEmptyGroupCreation() throws Exception {
+		app.getNavigationHelper().openMainPage();
+		app.getNavigationHelper().clickGroupsList();
+		app.getGroupHelper().clickNewGroup();
+		ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
+		app.getGroupHelper().fillForm(group);
+		app.getGroupHelper().clickSubmitGroup();
+		app.getNavigationHelper().clickGroupsList();
+	}
   
   @Test
-  /**
-   * Add new group with empty values test
-   */
   public void testEmptyGroupCreation() throws Exception {
-	openMainPage();
-    clickGroupsList();
-    clickNewGroup();
-    ObjGroup group = new ObjGroup("", "", "");
-    fillForm(group);
-    clickSubmitGroup();
-    clickGroupsList();
+	  app.getNavigationHelper().openMainPage();
+	  app.getNavigationHelper().clickGroupsList();
+	  app.getGroupHelper().clickNewGroup();
+	  ObjGroup group = new ObjGroup("", "", "");
+	  app.getGroupHelper().fillForm(group);
+	  app.getGroupHelper().clickSubmitGroup();
+	  app.getNavigationHelper().clickGroupsList();
   }
   
 }
