@@ -9,7 +9,11 @@ public class NavigationHelper extends BaseHelper {
 	}
 
 	public void openMainPage() {
-		manager.driver.get(manager.baseUrl + "index.php");
+		openPage(manager.baseUrl + "index.php");
+	}
+	
+	public void openGroupsPage() {
+		openPage(manager.baseUrl + "group.php");
 	}
 
 	public void clickMainPage() {

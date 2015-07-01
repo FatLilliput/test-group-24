@@ -8,10 +8,8 @@ public class GroupCreationTests extends TestBase {
 	public void testNonEmptyGroupCreation() throws Exception {
 		app.getNavigationHelper().openMainPage();
 		app.getNavigationHelper().clickGroupsList();
-		app.getGroupHelper().clickNewGroup();
 		ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
-		app.getGroupHelper().fillForm(group);
-		app.getGroupHelper().clickSubmitGroup();
+		app.getGroupHelper().addGroup(group);
 		app.getNavigationHelper().clickGroupsList();
 	}
   
@@ -19,10 +17,8 @@ public class GroupCreationTests extends TestBase {
   public void testEmptyGroupCreation() throws Exception {
 	  app.getNavigationHelper().openMainPage();
 	  app.getNavigationHelper().clickGroupsList();
-	  app.getGroupHelper().clickNewGroup();
 	  ObjGroup group = new ObjGroup("", "", "");
-	  app.getGroupHelper().fillForm(group);
-	  app.getGroupHelper().clickSubmitGroup();
+	  app.getGroupHelper().addGroup(group);
 	  app.getNavigationHelper().clickGroupsList();
   }
   

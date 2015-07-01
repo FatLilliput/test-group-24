@@ -4,6 +4,8 @@
  * All the other contact test classes should extend ContactHelper
  */
 package com.example.fw;
+
+import org.openqa.selenium.By;
 import com.example.tests.ObjContact;
 
 public class ContactHelper extends BaseHelper {
@@ -36,4 +38,55 @@ public class ContactHelper extends BaseHelper {
 		fillElement  ("phone2",    contact.phone2);	
 	}
 
+	public void selectContact(Integer id) {
+		String path;
+		if (id == null) {
+			path = "//[@name='entry'][1]/td/input";
+		} else {
+			path = "//[@name='entry']//input[@value='" + id + "']";
+		}
+		click(path);
+	}
+
+	public void clickEditContact(Integer id) {
+		String path;
+		if (id == null) {
+			path = "//[@name='entry'][1]//img[@alt='Edit']";
+		} else {
+			path = "//[@href='edit.php?id=" + id + "']/img";
+		}
+		click(path);
+	}
+
+	public void clickDeleteContact() {
+		click("//input[@value='Delete']");
+		
+	}
+	public void clickUpdateContact() {
+		click(".//input[@value='Update']");
+		
+	}
+
+	public boolean contactExist() {
+		  waitMe((long)0);
+		  boolean result = isElementPresent(By.name("entry"));
+		  waitMe((long)10);
+		  return result;
+	}
+
+	public void clickViewContact(Integer id) {
+		String path;
+		if (id == null) {
+			path = "//[@name='entry'][1]//img[@alt='Details']";
+		} else {
+			path = "//a[@href='view.php?id=" + id + "']/img";
+		}
+		click(path);
+	}
+
+	public void addContactToGroup(Integer id, String group) {
+		selectContact(id);
+		selectElement("to_group", group);
+		clickButton("Add to");
+	}
 }

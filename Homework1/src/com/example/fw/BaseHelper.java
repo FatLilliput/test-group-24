@@ -1,38 +1,45 @@
 package com.example.fw;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+//import org.openqa.selenium.WebElement;
+//import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+//import org.openqa.selenium.support.ui.WebDriverWait;
 
 public abstract class BaseHelper {
 	
-	protected ApplicationManager manager;
 	public boolean acceptNextAlert = true;
-	public WebDriver driver;
+	public WebDriver driver;	
+	protected ApplicationManager manager;
 	
 	public BaseHelper (ApplicationManager manager) {
 		this.manager = manager;
-		this.manager.driver = driver;
+		this.driver = manager.driver;
 	}
 	
 	public void fillElement(String name, String value) {
-		driver.findElement(By.name(name)).clear();
-	    driver.findElement(By.name(name)).sendKeys(value);
+		if (value != null) {
+			driver.findElement(By.name(name)).clear();
+			driver.findElement(By.name(name)).sendKeys(value);
+		}
 	  }
 
 	public void selectElement(String name, String value) {
-		if (value == null) {
-			return;
-		}
-		new Select(driver.findElement(By.name(name))).selectByVisibleText(value);
+		if (value != null) {
+			new Select(driver.findElement(By.name(name))).selectByVisibleText(value);
+			}
 	  }
 
+	public void click(String path) {
+		driver.findElement(By.xpath(path)).click();
+	}
+	
 	public void clickButton(String name) {
 		driver.findElement(By.name(name)).click();
 	  }
@@ -78,9 +85,8 @@ public abstract class BaseHelper {
 	    }
 	  }
 
-	public void wait(Long time, String id) {
-		WebDriverWait wait = new WebDriverWait(driver, time);
-		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.id(id)));
+	public void waitMe(Long time) {
+		driver.manage().timeouts().implicitlyWait(time, TimeUnit.SECONDS);
 	}
 
 }
