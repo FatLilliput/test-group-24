@@ -6,6 +6,7 @@
 package com.example.fw;
 
 import org.openqa.selenium.By;
+
 import com.example.tests.ObjContact;
 
 public class ContactHelper extends BaseHelper {
@@ -31,8 +32,9 @@ public class ContactHelper extends BaseHelper {
 		fillElement  ("work",      contact.work);
 		fillElement  ("email",     contact.email1);
 		fillElement  ("email2",    contact.email2);
-		selectElement("bday",    contact.birthDay);
-		selectElement("bmonth",  contact.birthMonth);
+		selectElement("bday",      contact.birthDay);
+		selectElement("bmonth",    contact.birthMonth);
+		selectElement("new_group", contact.group);
 		fillElement  ("byear",     contact.birthYear);
 		fillElement  ("address2",  contact.address2);
 		fillElement  ("phone2",    contact.phone2);	
@@ -94,5 +96,24 @@ public class ContactHelper extends BaseHelper {
 		clickAddNew();
 		fillForm(contact);
 		clickSubmitContact();
+	}
+
+	public void selectGroup(String group) {
+		selectElement("group", group);
+	}
+
+	public void searchContact(String contact) {
+		fillElement("searchstring", contact);
+		
+	}
+
+	public void clickHomePage(Integer id) {
+		String path;
+		if (id == null) {
+			path = "//tr[@name='entry']//img[@src='icons/house.png']";
+		} else {
+			path = "//a[@href='view.php?id=" + id + "']/parent::*/parent::*//img[@src='icons/house.png']";
+		}
+		click(path);
 	}
 }

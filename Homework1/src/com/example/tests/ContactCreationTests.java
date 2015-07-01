@@ -18,8 +18,8 @@ public class ContactCreationTests extends TestBase {
 		contact.home = "123 45 67";
 		contact.mobile = "8 123 456 78 90";
 		contact.work = "234657";
-		contact.email1 = "e@mail.com";
-		contact.email2 = "e@mail.ru";
+		contact.email1 = "e@ya.ru";
+		contact.email2 = "e2@ya.ru";
 		contact.birthDay = "1";
 		contact.birthMonth = "January";
 		contact.birthYear = "1975";
@@ -27,6 +27,9 @@ public class ContactCreationTests extends TestBase {
 		contact.phone2 = "Sweet Home 123";
 		app.getContactHelper().addContact(contact);
 		app.getNavigationHelper().clickMainPage();
+		app.getNavigationHelper().clickBirthList();
+		app.getNavigationHelper().clicPrintAll();
+		app.getNavigationHelper().openPrintPhones();
 	}
 	
 	@Test
@@ -36,5 +39,5 @@ public class ContactCreationTests extends TestBase {
 		app.getContactHelper().addContact(contact);		
 		app.getNavigationHelper().clickMainPage();
 	}
-  
+
 }

@@ -12,6 +12,7 @@ public class ObjContact {
 	public String birthDay;
 	public String birthMonth;
 	public String birthYear;
+	public String group;
 	public String address2;
 	public String phone2;
 	
@@ -26,11 +27,12 @@ public class ObjContact {
 		contact.home = "123 45 67";
 		contact.mobile = "8 123 456 78 90";
 		contact.work = "234657";
-		contact.email1 = "default@mail.com";
-		contact.email2 = "default@mail.ru";
+		contact.email1 = "default@ya.ru";
+		contact.email2 = "default2@ya.ru";
 		contact.birthDay = "1";
 		contact.birthMonth = "January";
 		contact.birthYear = "1900";
+		contact.group = null;
 		contact.address2 = "ContryD2 CityD2 AddressD2";
 		contact.phone2 = "Default 123";
 		return contact;

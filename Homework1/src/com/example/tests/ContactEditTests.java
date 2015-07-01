@@ -15,8 +15,8 @@ public class ContactEditTests extends TestBase {
 		}
 		app.getContactHelper().clickEditContact(null);
 		ObjContact contact = new ObjContact();
-		contact.email1 = "editedE@mail.com";
-		contact.email2 = "editedE@mail.ru";
+		contact.email1 = "editedE@ya.ru";
+		contact.email2 = "edited2E@ya.ru";
 		contact.birthDay = "10";
 		contact.birthMonth = "May";
 		app.getContactHelper().fillForm(contact);

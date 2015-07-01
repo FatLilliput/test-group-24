@@ -24,4 +24,19 @@ public class NavigationHelper extends BaseHelper {
 		clickLinkText("groups");
 	  }
 
+	public void clickBirthList() {
+		clickLinkText("next birthdays");
+		
+	}
+
+	public void clicPrintAll() {
+		clickLinkText("print all");
+		
+	}
+
+	public void openPrintPhones() {
+		openPage("view.php?all&print&phones");
+		
+	}
+
 }
