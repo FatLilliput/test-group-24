@@ -9,7 +9,6 @@ public class GroupDeleteTests extends TestBase{
 		app.getNavigationHelper().openMainPage();
 		app.getNavigationHelper().clickGroupsList();
 		if (!app.getGroupHelper().groupExist()) {
-			//app.getNavigationHelper().openGroupsPage();
 			ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
 			app.getGroupHelper().addGroup(group);
 			app.getNavigationHelper().clickGroupsList();

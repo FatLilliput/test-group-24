@@ -41,7 +41,7 @@ public class ContactHelper extends BaseHelper {
 	public void selectContact(Integer id) {
 		String path;
 		if (id == null) {
-			path = "//[@name='entry'][1]/td/input";
+			path = "//tr[@name='entry'][1]/td/input";
 		} else {
 			path = "//[@name='entry']//input[@value='" + id + "']";
 		}
@@ -51,9 +51,9 @@ public class ContactHelper extends BaseHelper {
 	public void clickEditContact(Integer id) {
 		String path;
 		if (id == null) {
-			path = "//[@name='entry'][1]//img[@alt='Edit']";
+			path = "//tr[@name='entry'][1]//img[@alt='Edit']";
 		} else {
-			path = "//[@href='edit.php?id=" + id + "']/img";
+			path = "//a[@href='edit.php?id=" + id + "']/img";
 		}
 		click(path);
 	}
@@ -77,7 +77,7 @@ public class ContactHelper extends BaseHelper {
 	public void clickViewContact(Integer id) {
 		String path;
 		if (id == null) {
-			path = "//[@name='entry'][1]//img[@alt='Details']";
+			path = "//tr[@name='entry'][1]//img[@alt='Details']";
 		} else {
 			path = "//a[@href='view.php?id=" + id + "']/img";
 		}
@@ -87,6 +87,12 @@ public class ContactHelper extends BaseHelper {
 	public void addContactToGroup(Integer id, String group) {
 		selectContact(id);
 		selectElement("to_group", group);
-		clickButton("Add to");
+		clickButton("add");
+	}
+
+	public void addContact(ObjContact contact) {
+		clickAddNew();
+		fillForm(contact);
+		clickSubmitContact();
 	}
 }

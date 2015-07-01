@@ -18,6 +18,23 @@ public class ObjContact {
 	public ObjContact() {
 		
 	}
+	public ObjContact DefaultContact(ObjContact contact) {
+		//contact = new ObjContact();
+		contact.firstName = "NameDefault";
+		contact.lastName = "SonameDefault";
+		contact.address = "ContryD CityD AddressD";
+		contact.home = "123 45 67";
+		contact.mobile = "8 123 456 78 90";
+		contact.work = "234657";
+		contact.email1 = "default@mail.com";
+		contact.email2 = "default@mail.ru";
+		contact.birthDay = "1";
+		contact.birthMonth = "January";
+		contact.birthYear = "1900";
+		contact.address2 = "ContryD2 CityD2 AddressD2";
+		contact.phone2 = "Default 123";
+		return contact;
+	}
 	
 	public ObjContact (
 			String firstName,
