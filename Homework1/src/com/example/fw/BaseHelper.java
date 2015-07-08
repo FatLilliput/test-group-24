@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -31,7 +32,7 @@ public abstract class BaseHelper {
 	  }
 
 	public void selectElement(String name, String value) {
-		if (value != null) {
+		if ((value != null) && !(value.isEmpty())) {
 			new Select(driver.findElement(By.name(name))).selectByVisibleText(value);
 			}
 	  }
@@ -84,6 +85,14 @@ public abstract class BaseHelper {
 	     acceptNextAlert = true;
 	    }
 	  }
+	public String getText(String input) {
+		WebElement text = (WebElement) driver.findElement(By.xpath("//*[@name='" + input + "']"));
+		return text.getAttribute("value");
+	}
+	
+	public String getTextArea(String input) {
+		return driver.findElement(By.xpath("//*[@name='" + input + "']")).getText();
+	}
 
 	public void waitMe(Long time) {
 		driver.manage().timeouts().implicitlyWait(time, TimeUnit.SECONDS);

@@ -4,18 +4,84 @@
  * - Creating contact with empty parameters
  */
 package com.example.tests;
+import java.util.Collections;
+import java.util.List;
+
 import org.testng.annotations.Test;
 
-public class ContactCreationTests extends TestBase {
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
-	@Test
-	public void testAddNonEmptyContact() throws Exception {
+public class ContactCreationTests extends ContactsTests {
+
+	@Test(dataProvider = "randomValidContactDataGenerator")
+	public void testAddNonEmptyContact(ObjContact contact) throws Exception {
+		app.getNavigationHelper().openMainPage();
+		
+		//get Contacts list before testing
+		List<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+		
+		app.getContactHelper().addContact(contact);
+		app.getNavigationHelper().clickMainPage();
+		
+		//get contacts list after testing
+		List<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+				
+		//modify contact
+		if (contact.email1.equals("")) {
+			contact.email1 = contact.email2;
+		}
+		if (contact.home.equals("")) {
+			if (contact.mobile.equals("")) {
+				contact.home = contact.work;
+			} else {
+				contact.home = contact.mobile;
+			}
+		}
+		
+		//Compare results
+		beforeTestingContacts.add(contact);
+		Collections.sort(beforeTestingContacts);
+		assertEquals(beforeTestingContacts, afterTestingContacts);
+		
+	}
+	
+	@Test()
+	public void testContactsPages() throws Exception {
 		app.getNavigationHelper().openMainPage();
 		ObjContact contact = new ObjContact();
-		contact.firstName = "Name 1";
-		contact.lastName = "Soname 1";
+		contact = contact.DefaultContact(contact);
+		
+		app.getContactHelper().addContact(contact);
+		app.getNavigationHelper().clickMainPage();
+		
+		//TODO: add this checks
+		//check the contacts birthday is present
+		app.getNavigationHelper().clickBirthList();
+//		assertTrue(app.getContactHelper().isBirthdayPresent(contact));
+		
+		//check that contact is present in print list
+		app.getNavigationHelper().clicPrintAll();
+		assertTrue(app.getContactHelper().isContactPresent(contact));
+		
+		//check that contact is present in phones list
+		app.getNavigationHelper().openPrintPhones();
+//		assertTrue(app.getContactHelper().isPhonePresent(contact));
+		
+	}
+	
+	@Test
+	public void testAddInvalidyContact() throws Exception {
+		app.getNavigationHelper().openMainPage();
+		
+		//get Contacts list before testing
+		List<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+		ObjContact contact = new ObjContact();
+		contact.firstName = "Name'";
+		contact.lastName = "Soname 1`";
 		contact.address = "123456 Contry City Address 1 1";
-		contact.home = "123 45 67";
+		contact.home = "1234567";
 		contact.mobile = "8 123 456 78 90";
 		contact.work = "234657";
 		contact.email1 = "e@ya.ru";
@@ -27,17 +93,14 @@ public class ContactCreationTests extends TestBase {
 		contact.phone2 = "Sweet Home 123";
 		app.getContactHelper().addContact(contact);
 		app.getNavigationHelper().clickMainPage();
-		app.getNavigationHelper().clickBirthList();
-		app.getNavigationHelper().clicPrintAll();
-		app.getNavigationHelper().openPrintPhones();
-	}
-	
-	@Test
-	public void testAddEmptyContact() throws Exception {
-		app.getNavigationHelper().openMainPage();
-		ObjContact contact = new ObjContact();
-		app.getContactHelper().addContact(contact);		
-		app.getNavigationHelper().clickMainPage();
+		
+		//get contacts list after testing
+		List<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+				
+		//Compare results
+		assertEquals(beforeTestingContacts, afterTestingContacts);
+		assertFalse(afterTestingContacts.contains(contact));
+		
 	}
 
 }

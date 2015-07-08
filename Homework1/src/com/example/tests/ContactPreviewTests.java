@@ -1,7 +1,11 @@
 package com.example.tests;
 
+import java.util.List;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 public class ContactPreviewTests extends TestBase {
 
@@ -57,23 +61,83 @@ public class ContactPreviewTests extends TestBase {
 	@Test
 	public void testSearchContact() {
 		app.getNavigationHelper().openMainPage();
+		
+		//get full list of contacts
+		List<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+		
 		app.getContactHelper().searchContact("Name 1");
+		//check that there is contact named "Name 1"
+		boolean name1 = false;
+		List<ObjContact> contacts1 = app.getContactHelper().getContactsList();
+		for (ObjContact contact1 : contacts1) {
+			if (contact1.firstName.equals("Name 1")) {
+				name1 = true;
+			}
+		}
+		assertTrue(name1);
+		
 		app.getContactHelper().searchContact("Name 2");
+		//check that there is contact named "Name 2"
+		boolean name2 = false;
+		List<ObjContact> contacts2 = app.getContactHelper().getContactsList();
+		for (ObjContact contact2 : contacts2) {
+			if (contact2.firstName.equals("Name 2")) {
+				name2 = true;
+			}
+		}
+		assertTrue(name2);
 		app.getContactHelper().searchContact("");
+		
+		//Check that empty searching returns default list
+		List<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+		assertEquals(beforeTestingContacts, afterTestingContacts);
 	}
 	
 	@Test
 	public void testSortByGroupContact() {
+		//save contacts parameters
+		ObjContact contact1 = new ObjContact();
+		contact1.firstName = "Name 1";
+ 		contact1.lastName = "Soname 1";
+ 		contact1.home = "1234567";
+ 		contact1.email1 = "e@ya.ru";
+ 		
+ 		ObjContact contact2 = new ObjContact();
+		contact2.firstName = "Name 2";
+ 		contact2.lastName = "Soname 2";
+ 		contact2.home = "7654321";
+ 		contact2.email1 = "e2@ya.ru";
+		
 		app.getNavigationHelper().openMainPage();
+		//get contacts list before testing
+		List<ObjContact> beforeTestingContacts = app.getContactHelper().getContactsList();
+		
 		app.getContactHelper().selectGroup("TestGroup1");
+		
+ 		//get contacts found in TestGroup1
+ 		List<ObjContact> contactsInGroup1 = app.getContactHelper().getContactsList();
+ 		//check that there is only first contact
+ 		assertTrue(contactsInGroup1.contains(contact1));
+ 		assertFalse(contactsInGroup1.contains(contact2));
+ 		
 		app.getContactHelper().selectGroup("TestGroup2");
+		
+ 		//get contacts found in TestGroup2
+ 		List<ObjContact> contactsInGroup2 = app.getContactHelper().getContactsList();
+ 		//check that there is only second contact
+ 		assertTrue(contactsInGroup2.contains(contact2));
+ 		assertFalse(contactsInGroup2.contains(contact1));
+ 		
 		app.getContactHelper().selectGroup("[all]");
-	}
-	
-	@Test
-	//Make sure that url doesn't lead to "heavy" site 
-	public void testCheckContactMainPage() {
-		app.getNavigationHelper().openMainPage();
-		app.getContactHelper().clickHomePage(null);
+		//get contacts found in all groups
+		List<ObjContact> afterTestingContacts = app.getContactHelper().getContactsList();
+		assertEquals(beforeTestingContacts, afterTestingContacts);
+		
+		app.getContactHelper().selectGroup("[none]");
+		//get contacts found outside groups
+ 		List<ObjContact> contactsOutOfGroup = app.getContactHelper().getContactsList();
+ 		//check that there is no contact
+ 		assertFalse(contactsOutOfGroup.contains(contact1));
+ 		assertFalse(contactsOutOfGroup.contains(contact2));
 	}
 }
