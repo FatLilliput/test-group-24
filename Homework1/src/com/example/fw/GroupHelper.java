@@ -38,7 +38,6 @@ public class GroupHelper extends BaseHelper {
 	  }
 
 	  public void clickNewGroup() {
-//		  waitMe((long) 0);
 		  clickButton("new");
 	  }
 	  
@@ -89,8 +88,12 @@ public class GroupHelper extends BaseHelper {
 	}
 	public Integer choosePosition() {
 		int count = manager.driver.findElements(By.xpath("//input[@type='checkbox']")).size();
-		Random rnd = new Random();
-		return rnd.nextInt(count-1);
+		if (count == 1) {
+			return 0;
+		} else {
+			Random rnd = new Random();
+			return rnd.nextInt(count-1);
+		}
 	}
 	public ObjGroup getGroupParams(ObjGroup group) {
 		group.name = getText("group_name");

@@ -70,7 +70,7 @@ public class ObjContact implements Comparable<ObjContact> {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+//		final int prime = 31;
 		int result = 1;
 //		result = prime * result + ((email1 == null) ? 0 : email1.hashCode());
 //		result = prime * result
@@ -81,11 +81,6 @@ public class ObjContact implements Comparable<ObjContact> {
 		return result;
 	}
 	
-	@Override
-	public String toString() {
-		return "ObjContact [firstName=" + firstName + ", lastName=" + lastName
-				+ ", home=" + home + ", email1=" + email1 + "]";
-	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -118,6 +113,16 @@ public class ObjContact implements Comparable<ObjContact> {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "ObjContact [firstName=" + firstName + ", lastName=" + lastName
+				+ ", address=" + address + ", home=" + home + ", mobile="
+				+ mobile + ", work=" + work + ", email1=" + email1
+				+ ", email2=" + email2 + ", birthDay=" + birthDay
+				+ ", birthMonth=" + birthMonth + ", birthYear=" + birthYear
+				+ ", group=" + group + ", address2=" + address2 + ", phone2="
+				+ phone2 + "]";
+	}
 	@Override
 	public int compareTo(ObjContact other) {
 		if (this.lastName.toLowerCase().equals(other.lastName.toLowerCase())) {

@@ -9,11 +9,11 @@ public class NavigationHelper extends BaseHelper {
 	}
 
 	public void openMainPage() {
-		openPage(manager.baseUrl + "index.php");
+		openPage("index.php");
 	}
 	
 	public void openGroupsPage() {
-		openPage(manager.baseUrl + "group.php");
+		openPage("group.php");
 	}
 
 	public void clickMainPage() {

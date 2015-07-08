@@ -29,6 +29,7 @@ public class GroupCreationTests extends GroupsTests {
 		//Check that test group was correctly added
 		beforeGroupsList.add(group);
 		Collections.sort(beforeGroupsList);
+		assertEquals(beforeGroupsList.size(), afterGroupsList.size());
 		assertEquals(beforeGroupsList, afterGroupsList);
 	}
 	

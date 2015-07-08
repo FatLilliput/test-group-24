@@ -1,7 +1,7 @@
 package com.example.tests;
 
 import java.util.List;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -9,7 +9,7 @@ import static org.testng.Assert.assertFalse;
 
 public class ContactPreviewTests extends TestBase {
 
-	@BeforeTest
+	@BeforeClass
 	public void setUp() throws Exception {
 		//This condition needed if only ContactPreviewTests class is executed 
 		if (app == null) {

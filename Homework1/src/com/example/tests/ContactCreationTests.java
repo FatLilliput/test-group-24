@@ -43,6 +43,7 @@ public class ContactCreationTests extends ContactsTests {
 		//Compare results
 		beforeTestingContacts.add(contact);
 		Collections.sort(beforeTestingContacts);
+		Collections.sort(afterTestingContacts);
 		assertEquals(beforeTestingContacts, afterTestingContacts);
 		
 	}
@@ -56,10 +57,9 @@ public class ContactCreationTests extends ContactsTests {
 		app.getContactHelper().addContact(contact);
 		app.getNavigationHelper().clickMainPage();
 		
-		//TODO: add this checks
 		//check the contacts birthday is present
 		app.getNavigationHelper().clickBirthList();
-//		assertTrue(app.getContactHelper().isBirthdayPresent(contact));
+		assertTrue(app.getContactHelper().isBirthdayPresent(contact));
 		
 		//check that contact is present in print list
 		app.getNavigationHelper().clicPrintAll();
@@ -67,7 +67,7 @@ public class ContactCreationTests extends ContactsTests {
 		
 		//check that contact is present in phones list
 		app.getNavigationHelper().openPrintPhones();
-//		assertTrue(app.getContactHelper().isPhonePresent(contact));
+		assertTrue(app.getContactHelper().isPhonePresent(contact));
 		
 	}
 	

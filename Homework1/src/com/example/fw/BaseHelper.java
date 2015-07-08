@@ -50,7 +50,7 @@ public abstract class BaseHelper {
 	}
 	
 	public void openPage(String link) {
-		driver.get(link);
+		driver.get(manager.baseUrl + link);
 	}
 
 	public boolean isElementPresent(By by) {

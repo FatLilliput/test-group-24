@@ -4,27 +4,22 @@
  */
 package com.example.tests;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import com.example.fw.ApplicationManager;
 
 public class TestBase {
 	public static ApplicationManager app;
 
-	@BeforeTest
+	@BeforeClass
 	public void setUp() throws Exception {
 		app = new ApplicationManager();
 	  }
 
-	@AfterSuite
+	@AfterClass
 	public void tearDown() throws Exception {
 		app.stop();	    
 	  }

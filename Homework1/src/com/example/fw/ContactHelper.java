@@ -174,40 +174,74 @@ public class ContactHelper extends BaseHelper {
 	}
 
 	public boolean isContactPresent(ObjContact contact) {
-		waitMe ((long)0);
-		boolean name = isElementPresent(By.xpath("//*[contains(text(),'" + contact.firstName + " " + contact.lastName +"')]"));
-		boolean address = isElementPresent(By.xpath("//*[text()='" + contact.address + "']"));
-		if (contact.address.equals("")) {
-			address = !address;
-		}
-		boolean home;
-		if (contact.home.equals("")) {
-			home = !isElementPresent(By.xpath("//*[text()='H: ']"));
+		waitMe ((long)0); 
+		String Contactname = convertContactsNameToFullName(contact);
+		boolean name = isElementPresent(By.xpath("//*[contains(text(),'" + Contactname +"')]"));
+		boolean address = isTagedElementPresent(contact.address);
+		boolean home = isUnTagedElementFound("//*[text()='H: ", contact.home);
+		boolean mobile = isUnTagedElementFound("//*[text()='M: ", contact.mobile);
+		boolean work =  isUnTagedElementFound("//*[text()='W: ", contact.work);
+		boolean email = isTagedElementPresent(contact.email1);
+		boolean email2 = isTagedElementPresent(contact.email2);
+		String birthdate = convertBirthdayToDate(contact);
+		boolean birth =  isUnTagedElementFound("//*[text()='Birthday: ", birthdate);	
+		boolean address2 = isTagedElementPresent(contact.address2);
+		boolean phone2 = isUnTagedElementFound("//*[text()='P: ", contact.phone2);
+
+		boolean result = name && address && home && mobile && work && email && email2 && birth && address2 && phone2;
+		waitMe((long)10);
+		return result;
+		
+	}
+
+	private String convertContactsNameToFullName(ObjContact contact) {
+		String Contactsname = "";
+		if (contact.firstName.equals("")){
+			if (!contact.firstName.equals("")) {
+				Contactsname = contact.lastName;
+			}
 		} else {
-			home = isElementPresent(By.xpath("//*[text()='H: " + contact.home + "']"));
+			Contactsname = contact.firstName;
+			if (!contact.firstName.equals("")) {
+				Contactsname = Contactsname + " " + contact.lastName;
+			}
 		}
-		boolean mobile;
-		if(contact.mobile.equals("")) {
-			mobile = !isElementPresent(By.xpath("//*[text()='M: ']"));
-		} else {
-			mobile = isElementPresent(By.xpath("//*[text()='M: " + contact.mobile + "']"));
+		return Contactsname;
+	}
+
+	private boolean isTagedElementPresent(String element) {
+		boolean isPresent = isElementPresent(By.xpath("//*[text()='" + element + "']"));
+		if (element.equals("")) {
+			isPresent = !isPresent;
 		}
-		boolean work;
-		if(contact.work.equals("")) {
-			work = !isElementPresent(By.xpath("//*[text()='W: ']"));
-		} else {
-			work = isElementPresent(By.xpath("//*[text()='W: " + contact.work + "']"));
+		return isPresent;
+	}
+
+	public List<String> getGroup() {
+		List<String> groups  = new ArrayList<String>() ;
+		List<WebElement> elements = driver.findElements(By.xpath("//*[@id='content']/i/a"));
+		for (WebElement element : elements) {
+			groups.add(element.getText());
 		}
-		boolean email= isElementPresent(By.xpath("//*[contains(text(),'" + contact.email1 +"')]"));
-		if (contact.email1.equals("")) {
-			email = !email;
-		} 
-		boolean email2 = isElementPresent(By.xpath("//*[contains(text(),'" + contact.email2 +"')]"));
-		if (contact.email2.equals("")) {
-			email2 = !email2;
-		} 
-		boolean birth;
-		//building birth date according to contact's data
+		return groups;
+	}
+
+	public boolean isPhonePresent(ObjContact contact) {
+		waitMe ((long)5);
+		String square =  "//*[text() = '" + contact.firstName + " " + contact.lastName + "']";
+		boolean name = isElementPresent(By.xpath(square));
+		boolean home = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='H: ", contact.home);
+		boolean mobile = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='M: ", contact.mobile);
+		boolean work = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='W: ", contact.work);
+		String birthdate = convertBirthdayToDate(contact);
+		boolean birth = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='Birthday: ", birthdate);
+		boolean phone2 = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='P: ", contact.phone2);
+		boolean result = name  && home && mobile && work && birth &&  phone2;
+		waitMe((long)10);
+		return result;
+	}
+
+	private String convertBirthdayToDate(ObjContact contact) {
 		String birthdate;
 		String bday;
 		String bmonth;
@@ -226,38 +260,100 @@ public class ContactHelper extends BaseHelper {
 		} else {
 			birthdate = bday + ". " + bmonth + " " + byear;
 		}
-		
-		if (birthdate.isEmpty()) {
-			birth = !isElementPresent(By.xpath("//*[text()='Birthday: ']"));
-		} else {
-			birth  = isElementPresent(By.xpath("//*[text()='Birthday: " + birthdate + "']"));
-		}
-			
-		boolean address2 = isElementPresent(By.xpath("//*[text()='" + contact.address2 + "']"));
-		
-		if (contact.address2.equals("")) {
-			address2 = !isElementPresent(By.xpath("//*[text()='" + contact.address2 + "']"));
-		} else {
-			address2= isElementPresent(By.xpath("//*[text()='" + contact.address2 + "']"));
-		}
-		boolean phone2;
-		if (contact.phone2.equals("")) {
-			phone2 = !isElementPresent(By.xpath("//*[text()='P: ']"));
-		} else {
-			phone2 = isElementPresent(By.xpath("//*[text()='P: " + contact.phone2 + "']"));
-		}
-		boolean result = name && address && home && mobile && work && email && email2 && birth && address2 && phone2;
-		waitMe((long)10);
-		return result;
-		
+		return birthdate;
 	}
-
-	public String getGroup() {
-		return driver.findElement(By.xpath("//*[@id='content']/i/a")).getText();
+	
+	private boolean isUnTagedElementFound(String path, String parameter) {
+		if (parameter.equals("")) {
+			return !isElementPresent(By.xpath(path + "']"));
+		} else {
+			return isElementPresent(By.xpath(path + parameter + "']"));
+		}
 	}
-
-	public boolean isPhonePresent(ObjContact contact) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	/*
+	 * Right now this test works only if there is a Surname
+	 * TODO Extend it
+	 */
+	public boolean isBirthdayPresent(ObjContact contact) {
+		//find contact's xpath
+		String path;
+		if (contact.lastName.equals("")) {
+			if (contact.firstName.equals("")) {
+				if (contact.email1.equals("")) {
+					if (contact.email2.equals("")) {
+						if (contact.home.equals("")) {
+							if (contact.mobile.equals("")) {
+								if (contact.work.equals("")) {
+									return true;
+								} else {
+									path = "//*[text()='" + contact.work + "']";
+								}
+							} else {
+								path = "//*[text()='" + contact.mobile + "']";
+							}
+						} else {
+							path = "//*[text()='" + contact.home + "']";
+						}
+					} else {
+						path = "//*[text()='" + contact.email2 + "']";
+					}
+				} else {
+					path = "//*[text()='" + contact.email1 + "']";
+				}
+			} else {
+				path = "//*[text()='" + contact.firstName + "']";
+			}
+		} else {
+			path = "//*[text()='" + contact.lastName + "']";
+		}
+		
+		//check correctly displayed
+		String dayPresent = manager.driver.findElement(By.xpath(path + "/parent::*/td[1]")).getText();
+		if (contact.birthDay.equals("")){
+			if (!dayPresent.equals(".")) {
+				return false;
+			}
+		} else {
+			if (!(dayPresent.equals(contact.birthDay + "."))) {
+				return false;
+			}
+		}
+		String ln = manager.driver.findElement(By.xpath(path + "/parent::*/td[2]")).getText();
+		if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[2]")).getText().equals(contact.lastName)) {
+			return false;
+		}
+		
+		if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[3]")).getText().equals(contact.firstName)) {
+			String fn = manager.driver.findElement(By.xpath(path + "/parent::*/td[3]")).getText();
+			return false;
+		}
+		
+		if (contact.email1.equals("")) {
+			if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.email2)) {
+				return false;
+			}
+		} else {
+			if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.email1)) {
+				return false;
+			}
+		}
+		if (contact.home.equals("")) {
+			if (contact.mobile.equals("")) {
+				if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.work)) {
+					return false;
+				}
+			} else {
+				if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.mobile)) {
+					return false;
+				}
+			}
+		} else {
+			if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.home.replace(" ", ""))) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

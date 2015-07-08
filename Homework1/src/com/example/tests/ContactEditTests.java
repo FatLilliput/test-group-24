@@ -85,6 +85,7 @@ public class ContactEditTests extends ContactsTests {
 		beforeTestingContacts.remove(index);
 		beforeTestingContacts.add(contact);
 		Collections.sort(beforeTestingContacts);
+		Collections.sort(afterTestingContacts);
 		assertEquals(beforeTestingContacts, afterTestingContacts);
 	}
 	
@@ -132,7 +133,7 @@ public class ContactEditTests extends ContactsTests {
 		app.getContactHelper().addContactToGroup(idContact, "GroupToAdd");
 		app.getNavigationHelper().clickMainPage();
 		app.getContactHelper().clickViewContact(idContact);
-		String contact_group = app.getContactHelper().getGroup();
-		assertEquals(group.name, contact_group);
+		List<String> contact_groups = app.getContactHelper().getGroup();
+		assertTrue(contact_groups.contains(group.name));
 	}
 }
