@@ -1,20 +1,20 @@
 package com.example.tests;
 
 public class ObjContact implements Comparable<ObjContact> {
-	public String firstName;
-	public String lastName;
-	public String address;
-	public String home;
-	public String mobile;
-	public String work;
-	public String email1;
-	public String email2;
-	public String birthDay;
-	public String birthMonth;
-	public String birthYear;
-	public String group;
-	public String address2;
-	public String phone2;
+	private String firstName;
+	private String lastName;
+	private String address;
+	private String home;
+	private String mobile;
+	private String work;
+	private String email1;
+	private String email2;
+	private String birthDay;
+	private String birthMonth;
+	private String birthYear;
+	private String group;
+	private String address2;
+	private String phone2;
 	
 	public ObjContact() {
 		
@@ -37,7 +37,106 @@ public class ObjContact implements Comparable<ObjContact> {
 		contact.phone2 = "Default 123";
 		return contact;
 	}
+
+	public ObjContact setFirstName(String firstName) {
+		this.firstName = firstName;
+		return this;
+	}
+	public ObjContact setLastName(String lastName) {
+		this.lastName = lastName;
+		return this;
+	}
+	public ObjContact setAddress(String address) {
+		this.address = address;
+		return this;
+	}
+	public ObjContact setHome(String home) {
+		this.home = home;
+		return this;
+	}
+	public ObjContact setMobile(String mobile) {
+		this.mobile = mobile;
+		return this;
+	}
+	public ObjContact setWork(String work) {
+		this.work = work;
+		return this;
+	}
+	public ObjContact setEmail1(String email1) {
+		this.email1 = email1;
+		return this;
+	}
+	public ObjContact setEmail2(String email2) {
+		this.email2 = email2;
+		return this;
+	}
+	public ObjContact setBirthDay(String birthDay) {
+		this.birthDay = birthDay;
+		return this;
+	}
+	public ObjContact setBirthMonth(String birthMonth) {
+		this.birthMonth = birthMonth;
+		return this;
+	}
+	public ObjContact setBirthYear(String birthYear) {
+		this.birthYear = birthYear;
+		return this;
+	}
+	public ObjContact setGroup(String group) {
+		this.group = group;
+		return this;
+	}
+	public ObjContact setAddress2(String address2) {
+		this.address2 = address2;
+		return this;
+	}
+	public ObjContact setPhone2(String phone2) {
+		this.phone2 = phone2;
+		return this;
+	}
 	
+	public String getFirstName() {
+		return firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public String getHome() {
+		return home;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public String getWork() {
+		return work;
+	}
+	public String getEmail1() {
+		return email1;
+	}
+	public String getEmail2() {
+		return email2;
+	}
+	public String getBirthDay() {
+		return birthDay;
+	}
+	public String getBirthMonth() {
+		return birthMonth;
+	}
+	public String getBirthYear() {
+		return birthYear;
+	}
+	public String getGroup() {
+		return group;
+	}
+	public String getAddress2() {
+		return address2;
+	}
+	public String getPhone2() {
+		return phone2;
+	}
 	public ObjContact (
 			String firstName,
 			String lastName,
@@ -70,14 +169,7 @@ public class ObjContact implements Comparable<ObjContact> {
 	
 	@Override
 	public int hashCode() {
-//		final int prime = 31;
 		int result = 1;
-//		result = prime * result + ((email1 == null) ? 0 : email1.hashCode());
-//		result = prime * result
-//				+ ((firstName == null) ? 0 : firstName.hashCode());
-//		result = prime * result + ((home == null) ? 0 : home.hashCode());
-//		result = prime * result
-//				+ ((lastName == null) ? 0 : lastName.hashCode());
 		return result;
 	}
 	
@@ -139,6 +231,4 @@ public class ObjContact implements Comparable<ObjContact> {
 			return this.lastName.toLowerCase().compareTo(other.lastName.toLowerCase());
 		}
 	}
-	
-	
 }

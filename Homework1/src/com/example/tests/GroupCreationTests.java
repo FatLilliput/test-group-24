@@ -1,57 +1,44 @@
 package com.example.tests;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 import org.testng.annotations.Test;
-
+import com.example.utilits.SortedListOf;
 
 public class GroupCreationTests extends GroupsTests {
 	
 	@Test (dataProvider = "randomValidDataGenerator")
 	public void testGroupWithValidDataCreation(ObjGroup group) throws Exception {
-		app.getNavigationHelper().openMainPage();
-		app.getNavigationHelper().clickGroupsList();
-		
 		//get list of groups before test
-		List<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
+		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
 		
 		//add new group
 		app.getGroupHelper().addGroup(group);
-		app.getNavigationHelper().clickGroupsList();
 		
 		//get groups list after adding test group
-		List<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
+		SortedListOf<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
 		
 		//Check that test group was correctly added
-		beforeGroupsList.add(group);
-		Collections.sort(beforeGroupsList);
-		assertEquals(beforeGroupsList.size(), afterGroupsList.size());
-		assertEquals(beforeGroupsList, afterGroupsList);
+		assertThat(afterGroupsList, equalTo(beforeGroupsList.withAdded(group)));
 	}
 	
 	@Test
 	public void testGroupWithInalidDataCreation() throws Exception {
-		app.getNavigationHelper().openMainPage();
-		app.getNavigationHelper().clickGroupsList();
-		
 		//get list of groups before test
-		List<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
+		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
 				
-		//edit first group
+		//add group with invaild parameters
 		ObjGroup group = new ObjGroup("Name'", "Header'", "Footer.");
 		app.getGroupHelper().addGroup(group);
-		app.getNavigationHelper().clickGroupsList();
 		
 		//get groups list after adding test group
-		List<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
+		SortedListOf<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
 				
 		//Check that test invalid group was not added
-		assertEquals(beforeGroupsList, afterGroupsList);
-		assertFalse(afterGroupsList.contains(group));
+		assertThat(afterGroupsList, equalTo(beforeGroupsList));
+		assertThat(afterGroupsList, not(contains(group)));
 	}
 	
 }

@@ -1,10 +1,9 @@
 package com.example.tests;
 
-import static org.testng.Assert.assertEquals;
-
-import java.util.List;
-
 import org.testng.annotations.Test;
+import com.example.utilits.SortedListOf;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class ContactDeleteTests extends ContactsTests{
 		
@@ -13,19 +12,18 @@ public class ContactDeleteTests extends ContactsTests{
 			int index = smartContactChoosing();
 			
 			//get Contacts list before testing
-			List<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+			SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
 			
 			int idContact = app.getContactHelper().getIdContact(index);
-			app.getContactHelper().clickEditContact(idContact);
-			app.getContactHelper().clickDeleteContact();
-			app.getNavigationHelper().clickMainPage();
+			app.getContactHelper()
+				.clickEditContact(idContact)
+				.clickDeleteContact();
 			
 			//get contacts list after testing
-			List<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+			SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
 			
 			//Compare results
-			beforeTestingContacts.remove(index);
-			assertEquals(beforeTestingContacts, afterTestingContacts);
+			assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index)));
 		}
 
 

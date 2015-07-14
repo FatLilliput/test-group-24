@@ -1,11 +1,12 @@
 package com.example.tests;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import java.util.Collections;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import java.util.List;
-
 import org.testng.annotations.Test;
+import com.example.utilits.SortedListOf;
 
 public class ContactEditTests extends ContactsTests {
 
@@ -19,14 +20,15 @@ public class ContactEditTests extends ContactsTests {
 		ObjContact beforeContact = new ObjContact();
 		beforeContact = app.getContactHelper().getContactParams();
 		
-		ObjContact contact = new ObjContact();
-		contact.email1 = "editedE@ya.ru";
-		contact.email2 = "edited2E@ya.ru";
-		contact.birthDay = "10";
-		contact.birthMonth = "May";
-		app.getContactHelper().fillForm(contact);
-		app.getContactHelper().clickUpdateContact();
-		app.getNavigationHelper().clickMainPage();
+		ObjContact contact = new ObjContact()
+			.setEmail1    ("editedE@ya.ru")
+			.setEmail2    ("edited2E@ya.ru")
+			.setBirthDay  ("10")
+			.setBirthMonth("May")
+		;
+		app.getContactHelper()
+			.fillForm(contact)
+			.clickUpdateContact();
 		
 		//save contact after testing
 		app.getContactHelper().clickEditContact(idContact);
@@ -34,17 +36,17 @@ public class ContactEditTests extends ContactsTests {
 		afterContact = app.getContactHelper().getContactParams();
 		
 		//Compare results
-		beforeContact.email1 = contact.email1;
-		beforeContact.email2 = contact.email2;
-		beforeContact.birthDay = contact.birthDay;
-		beforeContact.birthMonth = contact.birthMonth;
-		assertEquals (beforeContact, afterContact);
-		app.getNavigationHelper().clickMainPage();
+		beforeContact
+			.setEmail1    (contact.getEmail1())
+			.setEmail2    (contact.getEmail2())
+			.setBirthDay  (contact.getBirthDay())
+			.setBirthMonth(contact.getBirthMonth())
+		;
+		assertThat(beforeContact, equalTo(afterContact));
 		app.getContactHelper().clickViewContact(idContact);
 
 		//Check preview page
-		assertTrue(app.getContactHelper().isContactPresent(afterContact));
-
+		assertThat(app.getContactHelper().isContactPresent(afterContact), is(true));
 	}
 
 	@Test(dataProvider = "randomValidContactDataGenerator")
@@ -52,41 +54,36 @@ public class ContactEditTests extends ContactsTests {
 		int index = smartContactChoosing();
 		
 		//get Contacts list before testing
-		List<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
 		
 		int idContact = app.getContactHelper().getIdContact(index);
-		app.getContactHelper().clickEditContact(idContact);
-		app.getContactHelper().fillForm(contact);
-		app.getContactHelper().clickUpdateContact();
-		app.getNavigationHelper().clickMainPage();
+		app.getContactHelper()
+			.clickEditContact(idContact)
+			.fillForm(contact)
+			.clickUpdateContact();
 		
 		//Check preview page 
 		app.getContactHelper().clickViewContact(idContact);
-		assertTrue(app.getContactHelper().isContactPresent(contact));
-		
-		app.getNavigationHelper().clickMainPage();
+		assertThat(app.getContactHelper().isContactPresent(contact), is(true));
 		
 		//get contacts list after testing
-		List<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
 						
 		//modify contact
-		if (contact.email1.equals("")) {
-			contact.email1 = contact.email2;
+		//TODO: Pull it up
+		if (contact.getEmail1().equals("")) {
+			contact.setEmail1(contact.getEmail2());
 		}
-		if (contact.home.equals("")) {
-			if (contact.mobile.equals("")) {
-				contact.home = contact.work;
+		if (contact.getHome().equals("")) {
+			if (contact.getMobile().equals("")) {
+				contact.setHome(contact.getWork());
 			} else {
-				contact.home = contact.mobile;
+				contact.setHome(contact.getMobile());
 			}
 		}
 				
 		//Compare results
-		beforeTestingContacts.remove(index);
-		beforeTestingContacts.add(contact);
-		Collections.sort(beforeTestingContacts);
-		Collections.sort(afterTestingContacts);
-		assertEquals(beforeTestingContacts, afterTestingContacts);
+		assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index).withAdded(contact)));
 	}
 	
 	@Test
@@ -94,46 +91,43 @@ public class ContactEditTests extends ContactsTests {
 		int index = smartContactChoosing();
 		
 		//get Contacts list before testing
-		List<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
 		
 		int idContact = app.getContactHelper().getIdContact(index);
-		ObjContact contact = new ObjContact();
-		contact.lastName = "name'";
+		ObjContact contact = new ObjContact().setLastName("name'");
 		app.getContactHelper().clickEditContact(idContact);
 		
 		//save old contact params
 		ObjContact beforeContact = new ObjContact();
 		beforeContact = app.getContactHelper().getContactParams();
 		
-		app.getContactHelper().fillForm(contact);
-		app.getContactHelper().clickUpdateContact();
-		app.getNavigationHelper().clickMainPage();
+		app.getContactHelper()
+			.fillForm(contact)
+			.clickUpdateContact();
 		
 		//Check preview page 
 		app.getContactHelper().clickViewContact(idContact);
-		assertTrue(app.getContactHelper().isContactPresent(beforeContact));
-		
-		app.getNavigationHelper().clickMainPage();
+		assertThat(app.getContactHelper().isContactPresent(beforeContact), is(true));
 		
 		//get contacts list after testing
-		List<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
 				
 		//Compare results
-		assertEquals(beforeTestingContacts, afterTestingContacts);
+		assertThat(beforeTestingContacts, equalTo(afterTestingContacts));
 	}
 	
 	@Test
 	public void testAddContactToGroup () {
-		app.getNavigationHelper().openGroupsPage();
 		ObjGroup group = new ObjGroup("GroupToAdd", "Header123", "Footer123");
 		app.getGroupHelper().addGroup(group);
-		app.getNavigationHelper().clickMainPage();
 		int index = smartContactChoosing();
 		int idContact = app.getContactHelper().getIdContact(index);
-		app.getContactHelper().addContactToGroup(idContact, "GroupToAdd");
-		app.getNavigationHelper().clickMainPage();
-		app.getContactHelper().clickViewContact(idContact);
+		app.getContactHelper()
+			.addContactToGroup(idContact, "GroupToAdd")
+			.clickViewContact(idContact);
 		List<String> contact_groups = app.getContactHelper().getGroup();
-		assertTrue(contact_groups.contains(group.name));
+		
+		//check that there is wanted group on the page
+		assertThat(contact_groups, hasItem(group.getName()));
 	}
 }

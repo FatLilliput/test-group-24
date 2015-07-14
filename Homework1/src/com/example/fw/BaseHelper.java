@@ -97,5 +97,10 @@ public abstract class BaseHelper {
 	public void waitMe(Long time) {
 		driver.manage().timeouts().implicitlyWait(time, TimeUnit.SECONDS);
 	}
+	
+	public boolean checkPage(String string) {
+		return driver.getCurrentUrl().equals(string);
+//		return driver.getCurrentUrl().contains(string);
+	}
 
 }

@@ -14,20 +14,35 @@ public class ContactsTests extends TestBase{
 		List<Object[]> list = new ArrayList<Object[]>();
 		
 		for (int i = 0; i < 5; i++) {
-			ObjContact contact = new ObjContact();
-			contact.firstName = GetRandomParameter("Name");
-			contact.lastName  = GetRandomParameter("Surname");
-			contact.address   = GetRandomParameter("Address ");
-			contact.home      = GetRandomParameter("");
-			contact.mobile    = GetRandomParameter("");
-			contact.work      = GetRandomParameter("");
-			contact.email1    = GetRandomParameter("email") + "@ya.ru";
-			contact.email2    = GetRandomParameter("email") + "@ya.ru";
-			contact.birthDay  = GetRandomDate("D");
-			contact.birthMonth= GetRandomDate("M");
-			contact.birthYear = GetRandomDate("Y");
-			contact.address2  = GetRandomParameter("Address ");
-			contact.phone2    = GetRandomParameter("");
+			ObjContact contact = new ObjContact()
+				.setFirstName (GetRandomParameter("Name"))
+				.setLastName  (GetRandomParameter("Surname"))
+				.setAddress   (GetRandomParameter("Address "))
+				.setHome      (GetRandomParameter(""))
+				.setMobile	  (GetRandomParameter(""))
+				.setWork	  (GetRandomParameter(""))
+				.setEmail1	  (GetRandomParameter("email") + "@ya.ru")
+				.setEmail2	  (GetRandomParameter("email") + "@ya.ru")
+				.setBirthDay  (GetRandomDate("D"))
+				.setBirthMonth(GetRandomDate("M"))
+				.setBirthYear (GetRandomDate("Y"))
+				.setAddress2  (GetRandomParameter("Address "))
+				.setPhone2    (GetRandomParameter(""))
+			;
+			
+//			contact.firstName = GetRandomParameter("Name");
+//			contact.lastName  = GetRandomParameter("Surname");
+//			contact.address   = GetRandomParameter("Address ");
+//			contact.home      = GetRandomParameter("");
+//			contact.mobile    = GetRandomParameter("");
+//			contact.work      = GetRandomParameter("");
+//			contact.email1    = GetRandomParameter("email") + "@ya.ru";
+//			contact.email2    = GetRandomParameter("email") + "@ya.ru";
+//			contact.birthDay  = GetRandomDate("D");
+//			contact.birthMonth= GetRandomDate("M");
+//			contact.birthYear = GetRandomDate("Y");
+//			contact.address2  = GetRandomParameter("Address ");
+//			contact.phone2    = GetRandomParameter("");
 			list.add(i, new Object[]{contact});
 			
 		}

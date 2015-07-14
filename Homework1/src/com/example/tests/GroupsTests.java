@@ -13,12 +13,12 @@ public class GroupsTests extends TestBase{
 		List<Object[]> list = new ArrayList<Object[]>();
 		
 		for (int i = 0; i < 5; i++) {
-			ObjGroup group = new ObjGroup();
-			group.name = GetRandomParameter("test_group_name");
-			group.header = GetRandomParameter("test_group_header");
-			group.footer = GetRandomParameter("test_group_footer");
+			ObjGroup group = new ObjGroup()
+				.withName  (GetRandomParameter("test_group_name"))
+				.withHeader(GetRandomParameter("test_group_header"))
+				.withFooter(GetRandomParameter("test_group_footer"))
+			;
 			list.add(i, new Object[]{group});
-			
 		}
 		return list.iterator();
 	}
@@ -28,14 +28,10 @@ public class GroupsTests extends TestBase{
 	 * If there is no group in the list this method add it
 	 */
 	protected int extendedGroupIndexGettind() {
-		app.getNavigationHelper().openMainPage();
-		app.getNavigationHelper().clickGroupsList();
 		int index = 0;
 		if (!app.getGroupHelper().groupExist()) {
 			ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
 			app.getGroupHelper().addGroup(group);
-			app.getNavigationHelper().clickGroupsList();
-			app.getNavigationHelper().clickGroupsList();
 		} else {
 			index = app.getGroupHelper().choosePosition();
 		}

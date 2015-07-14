@@ -8,7 +8,6 @@ public class ApplicationManager {
 	
 	public WebDriver driver;
 	public String baseUrl;
-
 	private NavigationHelper navigationHelper;
  	public BaseHelper baseHelper;
 	private GroupHelper groupHelper;
@@ -18,6 +17,7 @@ public class ApplicationManager {
 		driver = new FirefoxDriver();
 	    baseUrl = "http://localhost/addressbookv4.1.4/";
 	    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);  
+	    driver.get(baseUrl);
 	}
 
 	public NavigationHelper getNavigationHelper () {
@@ -42,6 +42,7 @@ public class ApplicationManager {
 	}
 
 	public void stop() {
+//		driver.close();
 		driver.quit();
 	}
 

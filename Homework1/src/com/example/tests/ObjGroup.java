@@ -1,9 +1,9 @@
 package com.example.tests;
 
 public class ObjGroup implements Comparable<ObjGroup>{
-	public String name;
-	public String header;
-	public String footer;
+	private String name;
+	private String header;
+	private String footer;
 
 	public ObjGroup() {
 		
@@ -54,6 +54,32 @@ public class ObjGroup implements Comparable<ObjGroup>{
 	public int compareTo(ObjGroup other) {
 		return this.name.toLowerCase().compareTo(other.name.toLowerCase());
 	}
-	
+
+	public ObjGroup withName(String name) {
+		this.name  = name;
+		return this;
+	}
+
+	public ObjGroup withHeader(String header) {
+		this.header = header;
+		return this;
+	}
+
+	public ObjGroup withFooter(String footer) {
+		this.footer = footer;
+		return this;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getHeader() {
+		return header;
+	}
+
+	public String getFooter() {
+		return footer;
+	}
 	
 }
