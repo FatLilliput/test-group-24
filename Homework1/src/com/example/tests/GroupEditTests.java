@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 import com.example.utilits.SortedListOf;
 
 public class GroupEditTests extends GroupsTests {
-	
+	//TODO Tests are failing. Need to fix
 	@Test(dataProvider = "randomValidDataGenerator")
 	public void testFullGroupEdit (ObjGroup group) {
 		int index = extendedGroupIndexGettind();

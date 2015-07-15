@@ -226,6 +226,33 @@ public class ContactHelper extends BaseHelper {
 		waitMe((long)10);
 		return result;
 	}
+	
+	/*
+	 * This is a stub for isPhonePresent() method called from ContactPreviewTests class, testPhonePageContent() method
+	 * Right now contact lists generates from main page. So information about contact phones cant be readed correctly
+	 * To get rid of this stub you should generate contact lists from database
+	 * 
+	 * TODO implement grabbing contacts from database solution, remove this method
+	 */
+	public boolean isPhonePresentStub(ObjContact contact) {
+		if (!checkPage(PHONES_PRINT_PAGE)) {
+			manager.getNavigationHelper().openPrintPhones();
+		}
+		waitMe ((long)5);
+		String square =  "//*[text() = '" + contact.getFirstName() + " " + contact.getLastName() + "']";
+		boolean name = isElementPresent(By.xpath(square));
+		boolean phone;
+		if (contact.getHome() == null || contact.getHome().equals("")) {
+			phone = !isElementPresent(By.xpath(square + "/parent::*/parent::*/*[text()='H: " + "']")) &&
+					!isElementPresent(By.xpath(square + "/parent::*/parent::*/*[text()='M: " + "']")) &&
+					!isElementPresent(By.xpath(square + "/parent::*/parent::*/*[text()='W: " + "']"));
+		} else {
+			phone = isElementPresent(By.xpath("*//td[contains(.,'" + contact.getHome() + "')]"));
+		}
+		boolean result = name  && phone;
+		waitMe((long)10);
+		return result;
+	}
 
 	//TODO Make path select more clear
 	public boolean isBirthdayPresent(ObjContact contact) {

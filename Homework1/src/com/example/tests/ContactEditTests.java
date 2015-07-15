@@ -49,6 +49,7 @@ public class ContactEditTests extends ContactsTests {
 		assertThat(app.getContactHelper().isContactPresent(afterContact), is(true));
 	}
 
+	//TODO Tests are failing. Need to fix
 	@Test(dataProvider = "randomValidContactDataGenerator")
 	public void testFullEditContact (ObjContact contact) {
 		int index = smartContactChoosing();

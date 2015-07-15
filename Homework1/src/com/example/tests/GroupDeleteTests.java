@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class GroupDeleteTests extends GroupsTests {
-		
+	//TODO Tests are failing. Need to fix	
 	@Test
 	public void deleteOneGroup () {
 		int index = extendedGroupIndexGettind();
@@ -27,6 +27,7 @@ public class GroupDeleteTests extends GroupsTests {
 		assertThat(afterGroupsList, equalTo(beforeGroupsList.without(index)));
 	}
 
+	//TODO Tests are failing. Need to fix
 	@Test
 	public void deleteSeveralGroups () {
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList();

@@ -113,7 +113,7 @@ public class ContactPreviewTests extends TestBase {
 
 		//check that contact is present in phones list
 		for (ObjContact contact : contactList) {
-			assertThat(app.getContactHelper().isPhonePresent(contact), is(true));
+			assertThat(app.getContactHelper().isPhonePresentStub(contact), is(true));
 		}
 		//check contacts count
 		assertThat(contactList.size(), equalTo(app.getContactHelper().getContactsCount()));
