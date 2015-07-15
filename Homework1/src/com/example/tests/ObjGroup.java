@@ -28,7 +28,7 @@ public class ObjGroup implements Comparable<ObjGroup>{
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+//		final int prime = 31;
 		int result = 1;
 		return result;
 	}

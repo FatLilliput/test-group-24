@@ -26,16 +26,8 @@ public class ContactCreationTests extends ContactsTests {
 		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
 				
 		//modify contact
-		if (contact.getEmail1().equals("")) {
-			contact.setEmail1(contact.getEmail2());
-		}
-		if (contact.getHome().equals("")) {
-			if (contact.getMobile().equals("")) {
-				contact.setHome(contact.getWork());
-			} else {
-				contact.setHome(contact.getMobile());
-			}
-		}
+		contact = app.getContactHelper().formatContactForMainPage(contact);
+
 		//Compare results
 		assertThat(afterTestingContacts, equalTo(beforeTestingContacts.withAdded(contact)));
 
@@ -44,7 +36,7 @@ public class ContactCreationTests extends ContactsTests {
 	@Test()
 	public void testContactsPages() throws Exception {
 		ObjContact contact = new ObjContact();
-		contact = contact.DefaultContact(contact);
+		contact = contact.defaultContact(contact);
 		
 		app.getContactHelper().addContact(contact);
 		

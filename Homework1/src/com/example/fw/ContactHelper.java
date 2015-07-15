@@ -11,9 +11,7 @@ import java.util.Random;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-
 import com.example.tests.ObjContact;
-//import com.example.tests.ObjGroup;
 import com.example.utilits.SortedListOf;
 
 public class ContactHelper extends BaseHelper {
@@ -41,12 +39,16 @@ public class ContactHelper extends BaseHelper {
 	private static String CONTACTS_GROUP_BUTTON = "add";
 	private static String CONTACTS_BY_GROUP_SORTING = "group";
 	private static String CONTACTS_SEARCHING_INPUT = "searchstring";
+	private static String PHONES_PRINT_PAGE = "view.php?all&print&phones";
+	private static String ALL_PRINT_PAGE = "view.php?all&print";
+	
 	
 	private static String CONTACTS_XPATH = "//tr[@name='entry']";
 	private static String CONTACT_DELETE_ICON = "//input[@value='Delete']";
 	private static String CONTACT_UPDATE_ICON = ".//input[@value='Update']";
 	private static String CONTACT_EDIT_ICON = "//img[@alt='Edit']";
 	private static String CONTACT_DETAILS_ICON = "//img[@alt='Details']";
+	private static String CONTACTS_ON_PRINT_PAGE = "*//tbody/tr/td/br/..";
 	
 	private SortedListOf<ObjContact> cachedContactsList;
 	
@@ -141,13 +143,13 @@ public class ContactHelper extends BaseHelper {
 //	}
 
 	public int getIdContact(int index) {
-		WebElement contact =  (WebElement) manager.driver.findElement(By.xpath(CONTACTS_XPATH + "[" + (index + 1) + "]/td[7]/a"));
+		WebElement contact =  (WebElement)driver.findElement(By.xpath(CONTACTS_XPATH + "[" + (index+1) + "]/td[7]/a"));
 		String id = contact.getAttribute("href").substring("http://localhost/addressbookv4.1.4/edit.php?id=".length()); 
 		return Integer.parseInt(id);
 	}
 	
 	public int choosePosition() {
-		int count = manager.driver.findElements(By.xpath(CONTACT_EDIT_ICON)).size();
+		int count = driver.findElements(By.xpath(CONTACT_EDIT_ICON)).size();
 		if (count == 1) {
 			return 0;
 		} else {
@@ -208,7 +210,9 @@ public class ContactHelper extends BaseHelper {
 	}
 
 	public boolean isPhonePresent(ObjContact contact) {
-		manager.getNavigationHelper().openPrintPhones();
+		if (!checkPage(PHONES_PRINT_PAGE)) {
+			manager.getNavigationHelper().openPrintPhones();
+		}
 		waitMe ((long)5);
 		String square =  "//*[text() = '" + contact.getFirstName() + " " + contact.getLastName() + "']";
 		boolean name = isElementPresent(By.xpath(square));
@@ -223,6 +227,7 @@ public class ContactHelper extends BaseHelper {
 		return result;
 	}
 
+	//TODO Make path select more clear
 	public boolean isBirthdayPresent(ObjContact contact) {
 		manager.getNavigationHelper().clickBirthList();
 		//find contact's xpath
@@ -258,7 +263,7 @@ public class ContactHelper extends BaseHelper {
 		}
 		
 		//check correctly displayed
-		String dayPresent = manager.driver.findElement(By.xpath(path + "/parent::*/td[1]")).getText();
+		String dayPresent = driver.findElement(By.xpath(path + "/parent::*/td[1]")).getText();
 		if (contact.getBirthDay().equals("")){
 			if (!dayPresent.equals(".")) {
 				return false;
@@ -268,35 +273,35 @@ public class ContactHelper extends BaseHelper {
 				return false;
 			}
 		}
-		if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[2]")).getText().equals(contact.getLastName())) {
+		if (!driver.findElement(By.xpath(path + "/parent::*/td[2]")).getText().equals(contact.getLastName())) {
 			return false;
 		}
 		
-		if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[3]")).getText().equals(contact.getFirstName())) {
+		if (!driver.findElement(By.xpath(path + "/parent::*/td[3]")).getText().equals(contact.getFirstName())) {
 			return false;
 		}
 		
 		if (contact.getEmail1().equals("")) {
-			if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.getEmail2())) {
+			if (!driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.getEmail2())) {
 				return false;
 			}
 		} else {
-			if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.getEmail1())) {
+			if (!driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.getEmail1())) {
 				return false;
 			}
 		}
 		if (contact.getHome().equals("")) {
 			if (contact.getMobile().equals("")) {
-				if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getWork())) {
+				if (!driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getWork())) {
 					return false;
 				}
 			} else {
-				if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getMobile())) {
+				if (!driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getMobile())) {
 					return false;
 				}
 			}
 		} else {
-			if (!manager.driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getHome().replace(" ", ""))) {
+			if (!driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getHome().replace(" ", ""))) {
 				return false;
 			}
 		}
@@ -313,8 +318,11 @@ public class ContactHelper extends BaseHelper {
 	}
 
 	private boolean isUnTagedElementFound(String path, String parameter) {
-		if (parameter.equals("")) {
-			return !isElementPresent(By.xpath(path + "']"));
+		if (parameter == null || parameter.equals("")) {
+			waitMe ((long)0);
+			boolean result = !isElementPresent(By.xpath(path + "']"));
+			waitMe ((long)10);
+			return result;
 		} else {
 			return isElementPresent(By.xpath(path + parameter + "']"));
 		}
@@ -340,10 +348,21 @@ public class ContactHelper extends BaseHelper {
 		String bday;
 		String bmonth;
 		String byear;
-		bday   = contact.getBirthDay()  .replace("-", "");
-		bmonth = contact.getBirthMonth().replace("-", "");
-		byear  = contact.getBirthYear() .replace("-", "");
-
+		if (contact.getBirthDay() == null) {
+			bday = "";
+		} else {
+			bday   = contact.getBirthDay()  .replace("-", "");
+		}
+		if (contact.getBirthMonth() == null) {
+			bmonth = "";
+		} else {
+			bmonth = contact.getBirthMonth().replace("-", "");
+		}
+		if (contact.getBirthYear() == null) {
+			byear = "";
+		} else {
+			byear  = contact.getBirthYear() .replace("-", "");
+		}
 		if (bday.isEmpty()) {
 			if (bmonth.isEmpty() && byear.isEmpty()) {
 				birthdate = "";
@@ -404,6 +423,20 @@ public class ContactHelper extends BaseHelper {
 		click(path);
 		return this;
 	}
+	
+	public ObjContact formatContactForMainPage(ObjContact contact) {
+		if (contact.getEmail1().equals("")) {
+			contact.setEmail1(contact.getEmail2());
+		}
+		if (contact.getHome().equals("")) {
+			if (contact.getMobile().equals("")) {
+				contact.setHome(contact.getWork());
+			} else {
+				contact.setHome(contact.getMobile());
+			}
+		}
+		return contact;
+	}
 
 	private ContactHelper clickAddNew() {
 	    clickLinkText(CONTACTS_ADD_LINK);
@@ -430,8 +463,11 @@ public class ContactHelper extends BaseHelper {
 	}
 	
 	private boolean checkHomePage() {
-		checkPage("");
-		return false;
+		return checkPage("");
+	}
+
+	public int getContactsCount() {
+		return driver.findElements(By.xpath(CONTACTS_ON_PRINT_PAGE)).size();
 	}
 
 }

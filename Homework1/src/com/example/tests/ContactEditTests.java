@@ -70,22 +70,12 @@ public class ContactEditTests extends ContactsTests {
 		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
 						
 		//modify contact
-		//TODO: Pull it up
-		if (contact.getEmail1().equals("")) {
-			contact.setEmail1(contact.getEmail2());
-		}
-		if (contact.getHome().equals("")) {
-			if (contact.getMobile().equals("")) {
-				contact.setHome(contact.getWork());
-			} else {
-				contact.setHome(contact.getMobile());
-			}
-		}
-				
+		contact = app.getContactHelper().formatContactForMainPage(contact);
+		
 		//Compare results
 		assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index).withAdded(contact)));
 	}
-	
+
 	@Test
 	public void testInvalidEditContact () {
 		int index = smartContactChoosing();

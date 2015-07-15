@@ -91,7 +91,7 @@ public class ContactsTests extends TestBase{
 		app.getNavigationHelper().openMainPage();
 		if (!app.getContactHelper().contactExist()) {
 			ObjContact contact = new ObjContact();
-			contact.DefaultContact(contact);
+			contact.defaultContact(contact);
 			app.getContactHelper().addContact(contact);		
 			app.getNavigationHelper().clickMainPage();
 		} else {

@@ -19,7 +19,7 @@ public class ObjContact implements Comparable<ObjContact> {
 	public ObjContact() {
 		
 	}
-	public ObjContact DefaultContact(ObjContact contact) {
+	public ObjContact defaultContact(ObjContact contact) {
 		//contact = new ObjContact();
 		contact.firstName = "NameDefault";
 		contact.lastName = "SonameDefault";
@@ -35,6 +35,26 @@ public class ObjContact implements Comparable<ObjContact> {
 		contact.group = null;
 		contact.address2 = "ContryD2 CityD2 AddressD2";
 		contact.phone2 = "Default 123";
+		return contact;
+	}
+	
+	public ObjContact contact1(ObjContact contact) {
+		//contact = new ObjContact();
+		contact.firstName  = "Name 1";
+		contact.lastName   = "Surname 1";
+		contact.home       = "1234567";
+		contact.email1     = "e@ya.ru";
+		contact.group      = "TestGroup1";
+		return contact;
+	}
+	
+	public ObjContact contact2(ObjContact contact) {
+		//contact = new ObjContact();
+		contact.firstName  = "Name 2";
+		contact.lastName   = "Surname 2";
+		contact.home       = "7654321";
+		contact.email1     = "e2@ya.ru";
+		contact.group      = "TestGroup2";
 		return contact;
 	}
 
@@ -173,6 +193,7 @@ public class ObjContact implements Comparable<ObjContact> {
 		return result;
 	}
 	
+	//TODO Make shure that comparing is correct
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -215,6 +236,7 @@ public class ObjContact implements Comparable<ObjContact> {
 				+ ", group=" + group + ", address2=" + address2 + ", phone2="
 				+ phone2 + "]";
 	}
+	
 	@Override
 	public int compareTo(ObjContact other) {
 		if (this.lastName.toLowerCase().equals(other.lastName.toLowerCase())) {

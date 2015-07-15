@@ -23,7 +23,7 @@ public class ContactDeleteTests extends ContactsTests{
 			SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
 			
 			//Compare results
-			assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index)));
+			assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index - 1)));
 		}
 
 

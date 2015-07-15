@@ -99,7 +99,7 @@ public abstract class BaseHelper {
 	}
 	
 	public boolean checkPage(String string) {
-		return driver.getCurrentUrl().equals(string);
+		return driver.getCurrentUrl().equals(manager.baseUrl + string);
 //		return driver.getCurrentUrl().contains(string);
 	}
 

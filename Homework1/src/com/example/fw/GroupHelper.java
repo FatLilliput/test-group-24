@@ -161,7 +161,7 @@ public class GroupHelper extends BaseHelper {
 	  
 		
 	  private boolean checkGroupsPage() {
-		  return checkPage(manager.baseUrl + GROUPS_PAGE);		
+		  return checkPage(GROUPS_PAGE);		
 	  }
 
 
