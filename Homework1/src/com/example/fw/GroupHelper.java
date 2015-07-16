@@ -6,10 +6,13 @@
 
 package com.example.fw;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
 import com.example.tests.ObjGroup;
 import com.example.utilits.SortedListOf;
 
@@ -61,7 +64,6 @@ public class GroupHelper extends BaseHelper {
 	
 	private void rebuildCachedGroupsList() {
 		cachedGroupsList = new SortedListOf<ObjGroup>();
-//		List<ObjGroup> cachedGroupsList = new ArrayList<ObjGroup>();
 		List<WebElement> groupCheckboxes = driver.findElements(By.xpath(GROUP_XPATH));
 		for (WebElement checkbox : groupCheckboxes) {
 			String title = checkbox.getAttribute(GROUP_NAME);
@@ -94,10 +96,10 @@ public class GroupHelper extends BaseHelper {
 		int count = manager.driver.findElements(By.xpath(GROUP_XPATH)).size();
 		
 		if (count == 1) {
-			return 0;
+			return 1;
 		} else {
 			Random rnd = new Random();
-			return rnd.nextInt(count-1);
+			return rnd.nextInt(count-1) + 1;
 		}
 	}
 	
@@ -107,13 +109,15 @@ public class GroupHelper extends BaseHelper {
 		return Integer.parseInt(id);
 	}
 
-	  public GroupHelper selectGroup(int id) {
+	  public GroupHelper selectGroup(int index) {
 			String path;
-			if (id == 0) {
-				path = GROUP_XPATH + "[1]";
-			} else {
-				path = GROUP_XPATH.substring(0, (GROUP_XPATH.length() - 1)) + " and @value='" + id + "']";
-			}	
+//			if (id == 0) {
+//				path = GROUP_XPATH + "[1]";
+//			} else {
+//				path = GROUP_XPATH.substring(0, (GROUP_XPATH.length() - 1)) + " and @value='" + id + "']";
+//			}
+			
+			path = GROUP_XPATH + "[" + index + "]";
 			click(path);
 			return this;
 	  }
@@ -163,6 +167,18 @@ public class GroupHelper extends BaseHelper {
 	  private boolean checkGroupsPage() {
 		  return checkPage(GROUPS_PAGE);		
 	  }
+
+	public List<ObjGroup> getUnsortedGroupList() {
+		List<ObjGroup> groupsList = new ArrayList<ObjGroup>();
+		List<WebElement> groupCheckboxes = driver.findElements(By.xpath(GROUP_XPATH));
+		for (WebElement checkbox : groupCheckboxes) {
+			String title = checkbox.getAttribute(GROUP_NAME);
+			String name = title.substring("Select (".length(), title.length() - ")".length());
+			ObjGroup group = new ObjGroup().withName(name);
+			groupsList.add(group);
+		}
+		return groupsList;
+	}
 
 
 }

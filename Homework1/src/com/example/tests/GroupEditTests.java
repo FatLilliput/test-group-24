@@ -10,14 +10,16 @@ public class GroupEditTests extends GroupsTests {
 	//TODO Tests are failing. Need to fix
 	@Test(dataProvider = "randomValidDataGenerator")
 	public void testFullGroupEdit (ObjGroup group) {
+		
+		//select group to edit
 		int index = extendedGroupIndexGettind();
+		
 		//get list of groups before test
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
 				
 		//edit first group
-		int idGroup = app.getGroupHelper().getIdGroup(index);
 		app.getGroupHelper()
-			.clickEdit(idGroup)
+			.clickEdit(index)
 			.fillForm(group)
 			.clickModify();
 		
@@ -25,16 +27,14 @@ public class GroupEditTests extends GroupsTests {
 		SortedListOf<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
 				
 		//Check that test group was correctly edited
-		assertThat(afterGroupsList, equalTo(beforeGroupsList.without(index).withAdded(group)));
+		assertThat(afterGroupsList, equalTo(beforeGroupsList.without(index-1).withAdded(group)));
 	}
 	
 	@Test
 	public void testPartGroupEdit () {
-		int index = extendedGroupIndexGettind();
-				
 		//select group to edit
-		int idGroup = app.getGroupHelper().getIdGroup(index);
-		app.getGroupHelper().clickEdit(idGroup);
+		int index = extendedGroupIndexGettind();
+		app.getGroupHelper().clickEdit(index);
 		
 		//get groups parameters before editing
 		ObjGroup beforeGroup = new ObjGroup();
@@ -45,7 +45,7 @@ public class GroupEditTests extends GroupsTests {
 		app.getGroupHelper()
 			.fillForm(group)
 			.clickModify()
-			.clickEdit(idGroup);
+			.clickEdit(index);
 		
 		//get groups parameters after editing
 		ObjGroup afterGroup = new ObjGroup();
@@ -58,15 +58,15 @@ public class GroupEditTests extends GroupsTests {
 	
 	@Test
 	public void testNotValidGroupEdit () {
+		//select group to edit
 		int index = extendedGroupIndexGettind();
 		//get list of groups before test
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
 				
 		//edit first group
-		int idGroup = app.getGroupHelper().getIdGroup(index);
 		ObjGroup group = new ObjGroup("Name'", "Header'", "Footer.");
 		app.getGroupHelper()
-			.clickEdit(idGroup)
+			.clickEdit(index)
 			.fillForm(group)
 			.clickModify();
 		

@@ -14,7 +14,7 @@ public class GroupsTests extends TestBase{
 		
 		for (int i = 0; i < 5; i++) {
 			ObjGroup group = new ObjGroup()
-				.withName  (GetRandomParameter("test_group_name"))
+				.withName  (GetRandomParameter("testGroupName"))
 				.withHeader(GetRandomParameter("test_group_header"))
 				.withFooter(GetRandomParameter("test_group_footer"))
 			;
@@ -36,5 +36,15 @@ public class GroupsTests extends TestBase{
 			index = app.getGroupHelper().choosePosition();
 		}
 		return index;
+	}
+
+	protected void setUpDeleteSeveralGroups(int listSize) {
+		if (listSize < 3) {
+			ObjGroup group;
+			for (int i = 0; i < 4; i++) {
+				group = new ObjGroup("Group1ToDelede" + i, "Header1td" + i, "Footer1td" + i);
+				app.getGroupHelper().addGroup(group);
+			}
+		}
 	}
 }

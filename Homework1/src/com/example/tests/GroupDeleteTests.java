@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class GroupDeleteTests extends GroupsTests {
-	//TODO Tests are failing. Need to fix	
 	@Test
 	public void deleteOneGroup () {
 		int index = extendedGroupIndexGettind();
@@ -15,29 +14,22 @@ public class GroupDeleteTests extends GroupsTests {
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
 		
 		//delete group
-		int idGroup = app.getGroupHelper().getIdGroup(index);
 		app.getGroupHelper()
-			.selectGroup(idGroup)
+			.selectGroup(index)
 			.deleteGroup();
 		
 		//get groups list after adding test group
 		SortedListOf<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
 				
 		//Check that test group was correctly added
-		assertThat(afterGroupsList, equalTo(beforeGroupsList.without(index)));
+		assertThat(afterGroupsList, equalTo(beforeGroupsList.without(index-1)));
 	}
 
-	//TODO Tests are failing. Need to fix
 	@Test
 	public void deleteSeveralGroups () {
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList();
-		if (beforeGroupsList.size() < 3) {
-			ObjGroup group;
-			for (int i = 0; i < 4; i++) {
-				group = new ObjGroup("Group1ToDelede" + i, "Header1td" + i, "Footer1td" + i);
-				app.getGroupHelper().addGroup(group);
-			}
-		}
+		setUpDeleteSeveralGroups(beforeGroupsList.size());
+		
 		int index1 = app.getGroupHelper().choosePosition();
 		int index2;
 		while (true) {
@@ -47,15 +39,10 @@ public class GroupDeleteTests extends GroupsTests {
 			 }
 		}
 		
-		//get list of groups before test
-		beforeGroupsList = app.getGroupHelper().getGroupList(); 
-		
 		//delete group
-		int idGroup1 = app.getGroupHelper().getIdGroup(index1);
-		int idGroup2 = app.getGroupHelper().getIdGroup(index2);
 		app.getGroupHelper()
-			.selectGroup(idGroup1)
-			.selectGroup(idGroup2)
+			.selectGroup(index1)
+			.selectGroup(index2)
 			.deleteGroup();
 		
 		//get groups list after adding test group
@@ -64,7 +51,7 @@ public class GroupDeleteTests extends GroupsTests {
 		//Check that test group was correctly added
 		assertThat(
 				afterGroupsList, 
-				equalTo(beforeGroupsList.without(Integer.min(index1, index2)).without(Integer.max(index1, index2) - 1))
+				equalTo(beforeGroupsList.without(Integer.min((index1-1), (index2-1))).without(Integer.max((index1-1), (index2-1)) - 1))
 			);
 	}
 	
