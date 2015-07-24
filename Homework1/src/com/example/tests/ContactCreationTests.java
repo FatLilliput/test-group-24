@@ -6,7 +6,10 @@
 package com.example.tests;
 
 import org.testng.annotations.Test;
+
 import com.example.utilits.SortedListOf;
+
+import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -15,7 +18,7 @@ import static org.junit.Assert.assertThat;
 
 public class ContactCreationTests extends ContactsTests {
 
-	@Test(dataProvider = "randomValidContactDataGenerator")
+	@Test(dataProvider = "validContactsDataFromFile")
 	public void testAddNonEmptyContact(ObjContact contact) throws Exception {
 		//get Contacts list before testing
 		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
@@ -35,9 +38,7 @@ public class ContactCreationTests extends ContactsTests {
 	
 	@Test()
 	public void testContactsPages() throws Exception {
-		ObjContact contact = new ObjContact();
-		contact = contact.defaultContact(contact);
-		
+		ObjContact contact = loadContactsFromFile(CONTACT).get(0);		
 		app.getContactHelper().addContact(contact);
 		
 		//check the contacts birthday is present

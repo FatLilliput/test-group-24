@@ -142,6 +142,7 @@ public class ContactHelper extends BaseHelper {
 //		return this;
 //	}
 
+	//TODO Now you've got contact.id. Make method choosing id from contacts array, not from interface position
 	public int getIdContact(int index) {
 		WebElement contact =  (WebElement)driver.findElement(By.xpath(CONTACTS_XPATH + "[" + (index+1) + "]/td[7]/a"));
 		String id = contact.getAttribute("href").substring("http://localhost/addressbookv4.1.4/edit.php?id=".length()); 
@@ -149,6 +150,9 @@ public class ContactHelper extends BaseHelper {
 	}
 	
 	public int choosePosition() {
+		if (!checkHomePage()) {
+			manager.getNavigationHelper().openMainPage();
+		}
 		int count = driver.findElements(By.xpath(CONTACT_EDIT_ICON)).size();
 		if (count == 1) {
 			return 0;
@@ -226,67 +230,32 @@ public class ContactHelper extends BaseHelper {
 		waitMe((long)10);
 		return result;
 	}
-	
-	/*
-	 * This is a stub for isPhonePresent() method called from ContactPreviewTests class, testPhonePageContent() method
-	 * Right now contact lists generates from main page. So information about contact phones cant be readed correctly
-	 * To get rid of this stub you should generate contact lists from database
-	 * 
-	 * TODO implement grabbing contacts from database solution, remove this method
-	 */
-	public boolean isPhonePresentStub(ObjContact contact) {
-		if (!checkPage(PHONES_PRINT_PAGE)) {
-			manager.getNavigationHelper().openPrintPhones();
-		}
-		waitMe ((long)5);
-		String square =  "//*[text() = '" + contact.getFirstName() + " " + contact.getLastName() + "']";
-		boolean name = isElementPresent(By.xpath(square));
-		boolean phone;
-		if (contact.getHome() == null || contact.getHome().equals("")) {
-			phone = !isElementPresent(By.xpath(square + "/parent::*/parent::*/*[text()='H: " + "']")) &&
-					!isElementPresent(By.xpath(square + "/parent::*/parent::*/*[text()='M: " + "']")) &&
-					!isElementPresent(By.xpath(square + "/parent::*/parent::*/*[text()='W: " + "']"));
-		} else {
-			phone = isElementPresent(By.xpath("*//td[contains(.,'" + contact.getHome() + "')]"));
-		}
-		boolean result = name  && phone;
-		waitMe((long)10);
-		return result;
-	}
 
-	//TODO Make path select more clear
 	public boolean isBirthdayPresent(ObjContact contact) {
 		manager.getNavigationHelper().clickBirthList();
+		
 		//find contact's xpath
-		String path;
-		if (contact.getLastName().equals("")) {
-			if (contact.getFirstName().equals("")) {
-				if (contact.getEmail1().equals("")) {
-					if (contact.getEmail2().equals("")) {
-						if (contact.getHome().equals("")) {
-							if (contact.getMobile().equals("")) {
-								if (contact.getWork().equals("")) {
-									return true;
-								} else {
-									path = "//*[text()='" + contact.getWork() + "']";
-								}
-							} else {
-								path = "//*[text()='" + contact.getMobile() + "']";
-							}
-						} else {
-							path = "//*[text()='" + contact.getHome() + "']";
-						}
-					} else {
-						path = "//*[text()='" + contact.getEmail2() + "']";
-					}
-				} else {
-					path = "//*[text()='" + contact.getEmail1() + "']";
-				}
-			} else {
-				path = "//*[text()='" + contact.getFirstName() + "']";
-			}
-		} else {
+		String path = "//*[text()='" + contact.getWork() + "']";
+		if (!contact.getMobile().equals("")) {
+			path = "//*[text()='" + contact.getMobile() + "']";
+		}
+		if (!contact.getHome().equals("")) {
+			path = "//*[text()='" + contact.getHome() + "']";
+		}
+		if (!contact.getEmail2().equals("")) {
+			path = "//*[text()='" + contact.getEmail2() + "']";
+		}
+		if (!contact.getEmail1().equals("")) {
+			path = "//*[text()='" + contact.getEmail1() + "']";
+		}
+		if (!contact.getFirstName().equals("")) {
+			path = "//*[text()='" + contact.getFirstName() + "']";
+		}
+		if (!contact.getLastName().equals("")) {
 			path = "//*[text()='" + contact.getLastName() + "']";
+		}
+		if (path.equals("")) {
+			return true;
 		}
 		
 		//check correctly displayed

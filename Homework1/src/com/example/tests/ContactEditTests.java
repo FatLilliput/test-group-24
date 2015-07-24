@@ -1,39 +1,47 @@
 package com.example.tests;
 
+import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
+import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
 import java.util.List;
+
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 import com.example.utilits.SortedListOf;
 
 public class ContactEditTests extends ContactsTests {
 
+	@BeforeClass
+	public void setUp() throws Exception {
+		//main set up
+		TestBase temp = new TestBase();
+		temp.setUp();
+		addContacts(loadContactsFromFile(CONTACTS_XML_FILE));
+	}
+	
 	@Test
-	public void testEditPartOfContact () {
-		int index = smartContactChoosing();
-		int idContact = app.getContactHelper().getIdContact(index);
+	public void testEditPartOfContact () throws IOException {
+		//select testing contact
+		int idContact = app.getContactHelper().getIdContact(app.getContactHelper().choosePosition());
 		app.getContactHelper().clickEditContact(idContact);
 		
 		//save contact before testing
-		ObjContact beforeContact = new ObjContact();
-		beforeContact = app.getContactHelper().getContactParams();
+		ObjContact beforeContact = app.getContactHelper().getContactParams();
 		
-		ObjContact contact = new ObjContact()
-			.setEmail1    ("editedE@ya.ru")
-			.setEmail2    ("edited2E@ya.ru")
-			.setBirthDay  ("10")
-			.setBirthMonth("May")
-		;
+		ObjContact contact = loadContactsFromFile(CONTACT_EDIT_XML_FILE).get(0);
 		app.getContactHelper()
 			.fillForm(contact)
 			.clickUpdateContact();
 		
 		//save contact after testing
 		app.getContactHelper().clickEditContact(idContact);
-		ObjContact afterContact = new ObjContact();
-		afterContact = app.getContactHelper().getContactParams();
+		ObjContact afterContact = app.getContactHelper().getContactParams();
 		
 		//Compare results
 		beforeContact
@@ -52,11 +60,12 @@ public class ContactEditTests extends ContactsTests {
 	//TODO Tests are failing. Need to fix
 	@Test(dataProvider = "randomValidContactDataGenerator")
 	public void testFullEditContact (ObjContact contact) {
-		int index = smartContactChoosing();
+		int index = app.getContactHelper().choosePosition();
 		
 		//get Contacts list before testing
 		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
 		
+		//select testing contact
 		int idContact = app.getContactHelper().getIdContact(index);
 		app.getContactHelper()
 			.clickEditContact(idContact)
@@ -79,18 +88,16 @@ public class ContactEditTests extends ContactsTests {
 
 	@Test
 	public void testInvalidEditContact () {
-		int index = smartContactChoosing();
-		
 		//get Contacts list before testing
 		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
 		
-		int idContact = app.getContactHelper().getIdContact(index);
+		//select testing contact
+		int idContact = app.getContactHelper().getIdContact(app.getContactHelper().choosePosition());
 		ObjContact contact = new ObjContact().setLastName("name'");
 		app.getContactHelper().clickEditContact(idContact);
 		
 		//save old contact params
-		ObjContact beforeContact = new ObjContact();
-		beforeContact = app.getContactHelper().getContactParams();
+		ObjContact beforeContact = app.getContactHelper().getContactParams();
 		
 		app.getContactHelper()
 			.fillForm(contact)
@@ -108,13 +115,14 @@ public class ContactEditTests extends ContactsTests {
 	}
 	
 	@Test
-	public void testAddContactToGroup () {
-		ObjGroup group = new ObjGroup("GroupToAdd", "Header123", "Footer123");
+	public void testAddContactToGroup () throws IOException {
+		//add group to add contact
+		ObjGroup group = loadGroupsFromFile(GROUP_TO_ADD).get(0);
 		app.getGroupHelper().addGroup(group);
-		int index = smartContactChoosing();
-		int idContact = app.getContactHelper().getIdContact(index);
+		//select testing contact and add it to the group
+		int idContact = app.getContactHelper().getIdContact(app.getContactHelper().choosePosition());
 		app.getContactHelper()
-			.addContactToGroup(idContact, "GroupToAdd")
+			.addContactToGroup(idContact, group.getName())
 			.clickViewContact(idContact);
 		List<String> contact_groups = app.getContactHelper().getGroup();
 		

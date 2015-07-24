@@ -1,8 +1,12 @@
 package com.example.tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.example.tests.GroupsDataGenerator.generatedRandomGroups;
+import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
 
 import org.testng.annotations.DataProvider;
 
@@ -10,41 +14,29 @@ public class GroupsTests extends TestBase{
 
 	@DataProvider
 	public Iterator<Object[]> randomValidDataGenerator() {
-		List<Object[]> list = new ArrayList<Object[]>();
-		
-		for (int i = 0; i < 5; i++) {
-			ObjGroup group = new ObjGroup()
-				.withName  (GetRandomParameter("testGroupName"))
-				.withHeader(GetRandomParameter("test_group_header"))
-				.withFooter(GetRandomParameter("test_group_footer"))
-			;
-			list.add(i, new Object[]{group});
-		}
-		return list.iterator();
+		return wrapGroupsForDataProvider(generatedRandomGroups(5)).iterator();
 	}
 	
-	/*
-	 * This method checks that any group exist and get random group index
-	 * If there is no group in the list this method add it
-	 */
-	protected int extendedGroupIndexGettind() {
-		int index = 0;
-		if (!app.getGroupHelper().groupExist()) {
-			ObjGroup group = new ObjGroup("Group1", "Header1", "Footer1");
-			app.getGroupHelper().addGroup(group);
-		} else {
-			index = app.getGroupHelper().choosePosition();
+	@DataProvider
+	public Iterator<Object[]> validGroupsDataFromFile() throws IOException {
+		return wrapGroupsForDataProvider(loadGroupsFromFile(GROUPS_XML_FILE)).iterator();
+	}
+	
+	private List<Object[]> wrapGroupsForDataProvider(List<ObjGroup> groups) {
+		List<Object[]> wrapedGroups = new ArrayList<Object[]>();
+		for (ObjGroup group : groups) {
+			wrapedGroups.add(new Object[]{group});
 		}
-		return index;
+		return wrapedGroups;
 	}
 
-	protected void setUpDeleteSeveralGroups(int listSize) {
-		if (listSize < 3) {
-			ObjGroup group;
-			for (int i = 0; i < 4; i++) {
-				group = new ObjGroup("Group1ToDelede" + i, "Header1td" + i, "Footer1td" + i);
-				app.getGroupHelper().addGroup(group);
-			}
+	//TODO : This method should be replaced by method in ApplicationManager class adding group direct in database
+	//without interface implementation
+	public static void addGroups(List<ObjGroup> groups) {
+		for (ObjGroup group : groups) {
+			app.insertGroup(group);
+			app.getNavigationHelper().openGroupsPage();
 		}
+		
 	}
 }

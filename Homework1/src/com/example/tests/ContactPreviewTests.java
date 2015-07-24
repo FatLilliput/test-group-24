@@ -1,20 +1,26 @@
 package com.example.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.utilits.SortedListOf;
 
+import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
+import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
+import static com.example.tests.GroupsTests.addGroups;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
-public class ContactPreviewTests extends TestBase {
+public class ContactPreviewTests extends ContactsTests {
 
-	protected ObjContact contact1 = new ObjContact();
-	protected ObjContact contact2 = new ObjContact();
+	protected List<ObjContact> contacts = new ArrayList<ObjContact>();
+	protected List<ObjGroup> groups = new ArrayList<ObjGroup>();
 	
 	@BeforeClass
 	public void setUp() throws Exception {
@@ -23,16 +29,14 @@ public class ContactPreviewTests extends TestBase {
 		temp.setUp();
 		
 		//add test groups
-		ObjGroup group = new ObjGroup("TestGroup1", "Header123", "Footer123");
-		app.getGroupHelper().addGroup(group);
-		group = new ObjGroup("TestGroup2", "Header123", "Footer123");
-		app.getGroupHelper().addGroup(group);
-		
+		groups = loadGroupsFromFile(GROUPS_2);
+		addGroups(groups);
 		//add test contacts
-		contact1 = contact1.contact1(contact1);
-		app.getContactHelper().addContact(contact1);				
-		contact2 = contact2.contact2(contact2);
-		app.getContactHelper().addContact(contact2);		
+		contacts = loadContactsFromFile(CONTACTS_2);
+		addContacts(contacts);
+		//move contacts to groups
+		moveContactToGroup(contacts.get(0), groups.get(0));
+		moveContactToGroup(contacts.get(1), groups.get(1));
 	  }
 
 	@Test
@@ -41,24 +45,24 @@ public class ContactPreviewTests extends TestBase {
 		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
 		
 		//search contacts with name of contact1
-		app.getContactHelper().searchContact(contact1.getFirstName());
+		app.getContactHelper().searchContact(contacts.get(0).getFirstName());
 		//check that there is contact named as contact1
 		boolean name1 = false;
 		SortedListOf<ObjContact> contacts1 = app.getContactHelper().getContactsList();
 		for (ObjContact contact : contacts1) {
-			if (contact.getFirstName().equals(contact1.getFirstName())) {
+			if (contact.getFirstName().equals(contacts.get(0).getFirstName())) {
 				name1 = true;
 			}
 		}
 		assertThat(name1, is(true));
 		
 		//search contacts with name of contact2
-		app.getContactHelper().searchContact(contact2.getFirstName());
+		app.getContactHelper().searchContact(contacts.get(1).getFirstName());
 		//check that there is contact named as contact2
 		boolean name2 = false;
 		SortedListOf<ObjContact> contacts2 = app.getContactHelper().getContactsList();
 		for (ObjContact contact : contacts2) {
-			if (contact.getFirstName().equals(contact2.getFirstName())) {
+			if (contact.getFirstName().equals(contacts.get(1).getFirstName())) {
 				name2 = true;
 			}
 		}
@@ -76,20 +80,20 @@ public class ContactPreviewTests extends TestBase {
  		SortedListOf<ObjContact> beforeTestingContacts = app.getContactHelper().getContactsList();
 		
  		//sort contacts from group "TestGroup1"
-		app.getContactHelper().selectGroup("TestGroup1");
+		app.getContactHelper().selectGroup(groups.get(0).getName());
  		//get contacts found in TestGroup1
 		SortedListOf<ObjContact> contactsInGroup1 = app.getContactHelper().getContactsList();
  		//check that there is only first contact
- 		assertThat(contactsInGroup1, hasItem(contact1));
- 		assertThat(contactsInGroup1, not(hasItem(contact2)));
+ 		assertThat(contactsInGroup1, hasItem(contacts.get(0)));
+ 		assertThat(contactsInGroup1, not(hasItem(contacts.get(1))));
  		
  		//sort contacts from group "TestGroup2"
-		app.getContactHelper().selectGroup("TestGroup2");
+		app.getContactHelper().selectGroup(groups.get(1).getName());
  		//get contacts found in TestGroup2
 		SortedListOf<ObjContact> contactsInGroup2 = app.getContactHelper().getContactsList();
  		//check that there is only second contact
- 		assertThat(contactsInGroup2, hasItem(contact2));
- 		assertThat(contactsInGroup2, not(hasItem(contact1)));
+ 		assertThat(contactsInGroup2, hasItem(contacts.get(1)));
+ 		assertThat(contactsInGroup2, not(hasItem(contacts.get(0))));
  		
  		//sort contacts from all groups
 		app.getContactHelper().selectGroup("[all]");
@@ -102,8 +106,8 @@ public class ContactPreviewTests extends TestBase {
 		//get contacts found outside groups
 		SortedListOf<ObjContact> contactsOutOfGroup = app.getContactHelper().getContactsList();
  		//check that there is no contact
- 		assertThat(contactsOutOfGroup, not(hasItem(contact1)));
- 		assertThat(contactsOutOfGroup, not(hasItem(contact2)));
+ 		assertThat(contactsOutOfGroup, not(hasItem(contacts.get(0))));
+ 		assertThat(contactsOutOfGroup, not(hasItem(contacts.get(1))));
 	}
 	
 	@Test
@@ -113,7 +117,7 @@ public class ContactPreviewTests extends TestBase {
 
 		//check that contact is present in phones list
 		for (ObjContact contact : contactList) {
-			assertThat(app.getContactHelper().isPhonePresentStub(contact), is(true));
+			assertThat(app.getContactHelper().isPhonePresent(contact), is(true));
 		}
 		//check contacts count
 		assertThat(contactList.size(), equalTo(app.getContactHelper().getContactsCount()));

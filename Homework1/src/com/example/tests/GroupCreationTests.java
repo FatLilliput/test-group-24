@@ -9,7 +9,7 @@ import com.example.utilits.SortedListOf;
 
 public class GroupCreationTests extends GroupsTests {
 	
-	@Test (dataProvider = "randomValidDataGenerator")
+	@Test (dataProvider = "validGroupsDataFromFile")
 	public void testGroupWithValidDataCreation(ObjGroup group) throws Exception {
 		//get list of groups before test
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 

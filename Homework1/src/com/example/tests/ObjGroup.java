@@ -4,6 +4,7 @@ public class ObjGroup implements Comparable<ObjGroup>{
 	private String name;
 	private String header;
 	private String footer;
+	private int id;
 
 	public ObjGroup() {
 		
@@ -14,17 +15,12 @@ public class ObjGroup implements Comparable<ObjGroup>{
 		this.header = header;
 		this.footer = footer;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "ObjGroup [name=" + name + "]";
+		return "ObjGroup [name=" + name + ", header=" + header + ", footer="
+				+ footer + "]";
 	}
-	
-//	@Override
-//	public String toString() {
-//		return "ObjGroup [name=" + name + ", header=" + header + ", footer="
-//				+ footer + "]";
-//	}
 	
 	@Override
 	public int hashCode() {
@@ -69,6 +65,11 @@ public class ObjGroup implements Comparable<ObjGroup>{
 		this.footer = footer;
 		return this;
 	}
+	
+	public ObjGroup setId(int id) {
+		this.id = id;
+		return this;
+	}
 
 	public String getName() {
 		return name;
@@ -80,6 +81,10 @@ public class ObjGroup implements Comparable<ObjGroup>{
 
 	public String getFooter() {
 		return footer;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	
 }

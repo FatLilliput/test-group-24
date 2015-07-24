@@ -1,0 +1,24 @@
+<list>
+  <group>
+    <name>testGroupName2049754222</name>
+    <header>test_group_header1788465451</header>
+    <footer>test_group_footer228916893</footer>
+  </group>
+  <group>
+    <name></name>
+    <header></header>
+    <footer></footer>
+  </group>
+  <group>
+    <name></name>
+    <header>test_group_header343278492</header>
+    <footer></footer>
+  </group>
+  <group>
+    <name></name>
+    <header>header123
+    headert
+    header234</header>
+    <footer>test_group_footer-1050313165</footer>
+  </group>
+</list>

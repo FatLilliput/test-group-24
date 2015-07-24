@@ -15,49 +15,11 @@ public class ObjContact implements Comparable<ObjContact> {
 	private String group;
 	private String address2;
 	private String phone2;
+	private int id;
 	
 	public ObjContact() {
 		
 	}
-	public ObjContact defaultContact(ObjContact contact) {
-		//contact = new ObjContact();
-		contact.firstName = "NameDefault";
-		contact.lastName = "SonameDefault";
-		contact.address = "ContryD CityD AddressD";
-		contact.home = "123 45 67";
-		contact.mobile = "8 123 456 78 90";
-		contact.work = "234657";
-		contact.email1 = "default@ya.ru";
-		contact.email2 = "default2@ya.ru";
-		contact.birthDay = "1";
-		contact.birthMonth = "January";
-		contact.birthYear = "1900";
-		contact.group = null;
-		contact.address2 = "ContryD2 CityD2 AddressD2";
-		contact.phone2 = "Default 123";
-		return contact;
-	}
-	
-	public ObjContact contact1(ObjContact contact) {
-		//contact = new ObjContact();
-		contact.firstName  = "Name 1";
-		contact.lastName   = "Surname 1";
-		contact.home       = "1234567";
-		contact.email1     = "e@ya.ru";
-		contact.group      = "TestGroup1";
-		return contact;
-	}
-	
-	public ObjContact contact2(ObjContact contact) {
-		//contact = new ObjContact();
-		contact.firstName  = "Name 2";
-		contact.lastName   = "Surname 2";
-		contact.home       = "7654321";
-		contact.email1     = "e2@ya.ru";
-		contact.group      = "TestGroup2";
-		return contact;
-	}
-
 	public ObjContact setFirstName(String firstName) {
 		this.firstName = firstName;
 		return this;
@@ -114,6 +76,10 @@ public class ObjContact implements Comparable<ObjContact> {
 		this.phone2 = phone2;
 		return this;
 	}
+	public ObjContact setId(int id) {
+		this.id = id;
+		return this;
+	}
 	
 	public String getFirstName() {
 		return firstName;
@@ -157,6 +123,9 @@ public class ObjContact implements Comparable<ObjContact> {
 	public String getPhone2() {
 		return phone2;
 	}
+	public int getId() {
+		return id;
+	}
 	public ObjContact (
 			String firstName,
 			String lastName,
@@ -193,7 +162,6 @@ public class ObjContact implements Comparable<ObjContact> {
 		return result;
 	}
 	
-	//TODO Make shure that comparing is correct
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -1,18 +1,30 @@
 package com.example.tests;
+import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 import com.example.utilits.SortedListOf;
 
 public class GroupEditTests extends GroupsTests {
-	//TODO Tests are failing. Need to fix
+	
+	@BeforeClass
+	public void setUp() throws Exception {
+		//main set up
+		TestBase temp = new TestBase();
+		temp.setUp();
+		addGroups(loadGroupsFromFile(GROUPS_XML_FILE));
+	}
+	
 	@Test(dataProvider = "randomValidDataGenerator")
 	public void testFullGroupEdit (ObjGroup group) {
 		
 		//select group to edit
-		int index = extendedGroupIndexGettind();
+		int index = app.getGroupHelper().choosePosition();
 		
 		//get list of groups before test
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
@@ -33,7 +45,7 @@ public class GroupEditTests extends GroupsTests {
 	@Test
 	public void testPartGroupEdit () {
 		//select group to edit
-		int index = extendedGroupIndexGettind();
+		int index = app.getGroupHelper().choosePosition();
 		app.getGroupHelper().clickEdit(index);
 		
 		//get groups parameters before editing
@@ -59,7 +71,7 @@ public class GroupEditTests extends GroupsTests {
 	@Test
 	public void testNotValidGroupEdit () {
 		//select group to edit
-		int index = extendedGroupIndexGettind();
+		int index = app.getGroupHelper().choosePosition();
 		//get list of groups before test
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
 				

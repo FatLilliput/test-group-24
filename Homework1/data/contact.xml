@@ -1,0 +1,17 @@
+<list>
+  <contact>
+    <firstName>NameDefault</firstName>
+    <lastName>SurnameDefault</lastName>
+    <address>ContryD CityD AddressD</address>
+    <home>123 45 67</home>
+    <mobile>8 123 456 78 90</mobile>
+    <work>234657</work>
+    <email1>default@ya.ru</email1>
+    <email2>default2@ya.ru</email2>
+    <birthDay>13</birthDay>
+    <birthMonth>January</birthMonth>
+    <birthYear>1934</birthYear>
+    <address2>ContryD2 CityD2 AddressD2</address2>
+    <phone2>Default 123</phone2>
+  </contact>
+</list>

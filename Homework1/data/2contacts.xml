@@ -1,0 +1,34 @@
+<list>
+  <contact>
+    <firstName>Name 1</firstName>
+    <lastName>Surname 1</lastName>
+    <address>addr 1234 78</address>
+    <home>1234567</home>
+    <mobile>54433212</mobile>
+    <work>436</work>
+    <email1>e@ya.ru</email1>
+    <email2>rew@ya.com</email2>
+    <birthDay>1</birthDay>
+    <birthMonth>May</birthMonth>
+    <birthYear>1966</birthYear>
+    <group>TestGroup1</group>
+    <address2>Address 874389nb  dsfj</address2>
+    <phone2>567</phone2>
+  </contact>
+  <contact>
+    <firstName>Name 2</firstName>
+    <lastName>Surname2</lastName>
+    <address>Address 667 City 5657 gfgj</address>
+    <home>7654321</home>
+    <mobile>657 89 99</mobile>
+    <work>6444 444</work>
+    <email1>e2@ya.ru</email1>
+    <email2>email@ytj.ty</email2>
+    <birthDay>12</birthDay>
+    <birthMonth>July</birthMonth>
+    <birthYear>1977</birthYear>
+    <group>TestGroup2</group>
+    <address2>Addr 7878 post 87878 Flat 678687</address2>
+    <phone2>6788778 777 8</phone2>
+  </contact>
+</list>

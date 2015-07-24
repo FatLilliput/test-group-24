@@ -1,0 +1,1 @@
+java -cp bin;..\..\xstream-1.4.8\lib\xstream-1.4.8.jar;..\..\xstream-1.4.8\lib\xstream\xpp3_min-1.1.4c.jar;..\..\xstream-1.4.8\lib\xstream\xmlpull-1.1.3.1.jar;"C:\Program Files\Java\selenium-server-standalone-2.46.0.jar";"C:\Program Files\Java\mysql-connector-java-5.0.8\mysql-connector-java-5.0.8-bin.jar" -DconfigFile=firefox.properties org.testng.TestNG GroupsSuite.xml

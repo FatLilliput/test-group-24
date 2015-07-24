@@ -1,14 +1,27 @@
 package com.example.tests;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
 import com.example.utilits.SortedListOf;
+
+import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class GroupDeleteTests extends GroupsTests {
+	
+	@BeforeClass
+	public void setUp() throws Exception {
+		//main set up
+		TestBase temp = new TestBase();
+		temp.setUp();
+		addGroups(loadGroupsFromFile(GROUPS_XML_FILE));
+	}
+	
 	@Test
 	public void deleteOneGroup () {
-		int index = extendedGroupIndexGettind();
+		int index = app.getGroupHelper().choosePosition();
 		
 		//get list of groups before test
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
@@ -28,7 +41,6 @@ public class GroupDeleteTests extends GroupsTests {
 	@Test
 	public void deleteSeveralGroups () {
 		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList();
-		setUpDeleteSeveralGroups(beforeGroupsList.size());
 		
 		int index1 = app.getGroupHelper().choosePosition();
 		int index2;

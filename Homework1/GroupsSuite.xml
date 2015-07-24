@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Groups Tests">
+  <test verbose="1" name="Default test">
+    <classes>
+      <class name="com.example.tests.GroupDeleteTests"/>
+      <class name="com.example.tests.GroupCreationTests"/>
+      <class name="com.example.tests.GroupEditTests"/>
+      <class name="com.example.tests.GroupPreviewTests"/>
+    </classes>
+  </test> <!-- Default test -->
+</suite> <!-- Default suite -->
