@@ -1,8 +1,10 @@
 <list>
   <contact>
+  	<address>address 1234</address>
     <email1>editedE@ya.ru</email1>
     <email2>edited2E@ya.ru</email2>
     <birthDay>10</birthDay>
     <birthMonth>May</birthMonth>
+    <address2>post 5678 Flat 234-00</address2>
   </contact>
 </list>

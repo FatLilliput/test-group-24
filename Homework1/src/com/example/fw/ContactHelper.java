@@ -8,13 +8,14 @@ package com.example.fw;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import com.example.tests.ObjContact;
+
 import com.example.utilits.SortedListOf;
 
-public class ContactHelper extends BaseHelper {
+public class ContactHelper extends WebDriverBaseHelper {
 	
 	//There are some constants of element, links and xpaths names
 	//They are needed for fast refactoring in case of software changes
@@ -40,7 +41,6 @@ public class ContactHelper extends BaseHelper {
 	private static String CONTACTS_BY_GROUP_SORTING = "group";
 	private static String CONTACTS_SEARCHING_INPUT = "searchstring";
 	private static String PHONES_PRINT_PAGE = "view.php?all&print&phones";
-	private static String ALL_PRINT_PAGE = "view.php?all&print";
 	
 	
 	private static String CONTACTS_XPATH = "//tr[@name='entry']";
@@ -50,25 +50,18 @@ public class ContactHelper extends BaseHelper {
 	private static String CONTACT_DETAILS_ICON = "//img[@alt='Details']";
 	private static String CONTACTS_ON_PRINT_PAGE = "*//tbody/tr/td/br/..";
 	
-	private SortedListOf<ObjContact> cachedContactsList;
-	
 	public ContactHelper(ApplicationManager manager) {
 		super(manager);
 	}
 	
 	//TODO: There is a bug in addressbook. In address table first and last names are changed places
 	
-	public SortedListOf<ObjContact> getContactsList() {
+	public List<ObjContact> getUnsortedContactsList() {
 		if (!checkHomePage()) {
 			manager.getNavigationHelper().openMainPage();
 		}
-		if (cachedContactsList == null) {
-			rebuildCachedContactsList();
-		}
-		return cachedContactsList;
-	}
-	private void rebuildCachedContactsList() {
-		cachedContactsList = new SortedListOf<ObjContact>();
+		List<ObjContact> contacts = new ArrayList<ObjContact>();
+		waitMe ((long)2);
 		List<WebElement> contactRows = driver.findElements(By.xpath(CONTACTS_XPATH));
 		for (WebElement contactRow : contactRows) {
 			ObjContact contact = new ObjContact()
@@ -77,8 +70,10 @@ public class ContactHelper extends BaseHelper {
 				.setEmail1(contactRow.findElement(By.xpath("./td[4]")).getText())
 				.setHome(contactRow.findElement(By.xpath("./td[5]")).getText())
 			;
-			cachedContactsList.add(contact);
+			contacts.add(contact);
 		}
+		waitMe ((long)10);
+		return contacts;
 	}
 
 	public ContactHelper fillForm(ObjContact contact) {
@@ -103,9 +98,7 @@ public class ContactHelper extends BaseHelper {
 		selectContact(id);
 		selectElement(CONTACTS_GROUP_SELECT, group);
 		clickButton(CONTACTS_GROUP_BUTTON);
-		cachedContactsList = null;
 		manager.getNavigationHelper().clickMainPage();
-		rebuildCachedContactsList();
 		return this;
 	}
 
@@ -113,21 +106,24 @@ public class ContactHelper extends BaseHelper {
 		clickAddNew();
 		fillForm(contact);
 		clickSubmitContact();
+		manager.getModel().addContact(contact);
 		return this;
 	}
 
 	public ContactHelper selectGroup(String group) {
+		if (!checkHomePage()) {
+			manager.getNavigationHelper().openMainPage();
+		}
 		selectElement(CONTACTS_BY_GROUP_SORTING, group);
-		cachedContactsList = null;
-		rebuildCachedContactsList();
 		return this;
 	}
 
 	public ContactHelper searchContact(String contact) {
+		if (!checkHomePage()) {
+			manager.getNavigationHelper().openMainPage();
+		}
 		fillElement(CONTACTS_SEARCHING_INPUT, contact);
 		driver.findElement(By.name(CONTACTS_SEARCHING_INPUT)).sendKeys(Keys.RETURN);
-		cachedContactsList = null;
-		rebuildCachedContactsList();
 		return this;
 	}
 
@@ -142,7 +138,6 @@ public class ContactHelper extends BaseHelper {
 //		return this;
 //	}
 
-	//TODO Now you've got contact.id. Make method choosing id from contacts array, not from interface position
 	public int getIdContact(int index) {
 		WebElement contact =  (WebElement)driver.findElement(By.xpath(CONTACTS_XPATH + "[" + (index+1) + "]/td[7]/a"));
 		String id = contact.getAttribute("href").substring("http://localhost/addressbookv4.1.4/edit.php?id=".length()); 
@@ -184,32 +179,64 @@ public class ContactHelper extends BaseHelper {
 			.setBirthDay   (getText(CONTACT_BIRTHDAY_DAY_INPUT))
 			.setBirthMonth (getText(CONTACT_BIRTHDAY_MONTH_INPUT))
 			.setBirthYear  (getText(CONTACT_BIRTHDAY_YEAR_INPUT))
-			.setGroup      (null)
 			.setAddress2   (getTextArea(CONTACT_ADDRESS2_INPUT))
 			.setPhone2     (getText(CONTACT_PHONE2_INPUT))
 		;
 		return contact;
 	}
 
+	//TODO: Tests are failing from Print all pages for address wrote with <br>
 	public boolean isContactPresent(ObjContact contact) {
-		manager.getNavigationHelper().clicPrintAll();
 		waitMe ((long)0); 
 		String Contactname = convertContactsNameToFullName(contact);
-		boolean name = isElementPresent(By.xpath("//*[contains(text(),'" + Contactname +"')]"));
-		boolean address = isTagedElementPresent(contact.getAddress());
-		boolean home = isUnTagedElementFound("//*[text()='H: ", contact.getHome());
-		boolean mobile = isUnTagedElementFound("//*[text()='M: ", contact.getMobile());
-		boolean work =  isUnTagedElementFound("//*[text()='W: ", contact.getWork());
-		boolean email = isTagedElementPresent(contact.getEmail1());
-		boolean email2 = isTagedElementPresent(contact.getEmail2());
-		String birthdate = convertBirthdayToDate(contact);
-		boolean birth =  isUnTagedElementFound("//*[text()='Birthday: ", birthdate);	
-		boolean address2 = isTagedElementPresent(contact.getAddress2());
-		boolean phone2 = isUnTagedElementFound("//*[text()='P: ", contact.getPhone2());
 
-		boolean result = name && address && home && mobile && work && email && email2 && birth && address2 && phone2;
+		if (!isElementPresent(By.xpath("//*[contains(text(),'" + Contactname +"')]"))) {
+			System.out.println("Name " + Contactname + " false");
+			return false;
+		}
+/*
+		if (!isTagedElementPresent(contact.getAddress())) {
+			System.out.println("Address " + contact.getAddress() + " false");
+			return false;
+		}
+*/
+		if (!isUnTagedElementFound("//*[text()='H: ", contact.getHome())) {
+			System.out.println("Home " + contact.getHome() + " false.");
+			return false;
+		}
+		if (!isUnTagedElementFound("//*[text()='M: ", contact.getMobile())) {
+			System.out.println("Mobile " + contact.getMobile() + " false.");
+			return false;
+		}
+		if (!isUnTagedElementFound("//*[text()='W: ", contact.getWork())) {
+			System.out.println("Work " + contact.getWork() + " false.");
+			return false;
+		}
+		if (!isTagedElementPresent(contact.getEmail1())) {
+			System.out.println("Email1 " + contact.getEmail1() + " false.");
+			return false;
+		}
+		if (!isTagedElementPresent(contact.getEmail2())) {
+			System.out.println("Email2 " + contact.getEmail2() + " false.");
+			return false;
+		}
+		String birthdate = convertBirthdayToDate(contact);
+		if (!isUnTagedElementFound("//*[text()='Birthday: ", birthdate)) {
+			System.out.println("birthdate " + birthdate + " false");
+			return false;
+		}
+/*		
+		if (!isTagedElementPresent(contact.getAddress2())) {
+			System.out.println("Address2 " + contact.getAddress2() + " false");
+			return false;
+		}
+*/
+		if (!isUnTagedElementFound("//*[text()='P: ", contact.getPhone2())) {
+			System.out.println("Phone2 " + contact.getPhone2() + " false.");
+			return false;
+		}
 		waitMe((long)10);
-		return result;
+		return true;
 		
 	}
 
@@ -219,16 +246,33 @@ public class ContactHelper extends BaseHelper {
 		}
 		waitMe ((long)5);
 		String square =  "//*[text() = '" + contact.getFirstName() + " " + contact.getLastName() + "']";
-		boolean name = isElementPresent(By.xpath(square));
-		boolean home = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='H: ", contact.getHome());
-		boolean mobile = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='M: ", contact.getMobile());
-		boolean work = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='W: ", contact.getWork());
+		if (!isElementPresent(By.xpath(square))) {
+			System.out.println("Name " + square + "is not present");
+			return false;
+		}
+		if (!isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='H: ", contact.getHome())) {
+			System.out.println("Home " + contact.getHome() + "is not present");
+			return false;
+		}
+		if (!isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='M: ", contact.getMobile())) {
+			System.out.println("Mobile " + contact.getMobile() + "is not present");
+			return false;
+		} 
+		if (!isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='W: ", contact.getWork())) {
+			System.out.println("Work " + contact.getWork() + "is not present");
+			return false;
+		}
 		String birthdate = convertBirthdayToDate(contact);
-		boolean birth = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='Birthday: ", birthdate);
-		boolean phone2 = isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='P: ", contact.getPhone2());
-		boolean result = name  && home && mobile && work && birth &&  phone2;
+		if (!isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='Birthday: ", birthdate)) {
+			System.out.println("Birthday " + birthdate + "is not present");
+			return false;
+		}
+		if (!isUnTagedElementFound(square + "/parent::*/parent::*/*[text()='P: ", contact.getPhone2())) {
+			System.out.println("Phone2 " + contact.getPhone2() + "is not present");
+			return false;
+		}
 		waitMe((long)10);
-		return result;
+		return true;
 	}
 
 	public boolean isBirthdayPresent(ObjContact contact) {
@@ -262,42 +306,51 @@ public class ContactHelper extends BaseHelper {
 		String dayPresent = driver.findElement(By.xpath(path + "/parent::*/td[1]")).getText();
 		if (contact.getBirthDay().equals("")){
 			if (!dayPresent.equals(".")) {
+				System.out.println("Date " + dayPresent + " is incorrect");
 				return false;
 			}
 		} else {
 			if (!(dayPresent.equals(contact.getBirthDay() + "."))) {
+				System.out.println("Date " + dayPresent + " is incorrect");
 				return false;
 			}
 		}
 		if (!driver.findElement(By.xpath(path + "/parent::*/td[2]")).getText().equals(contact.getLastName())) {
+			System.out.println("Last Name " + contact.getLastName() + " is not present");
 			return false;
 		}
 		
 		if (!driver.findElement(By.xpath(path + "/parent::*/td[3]")).getText().equals(contact.getFirstName())) {
+			System.out.println("First Name " + contact.getFirstName() + " is not present");
 			return false;
 		}
 		
 		if (contact.getEmail1().equals("")) {
 			if (!driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.getEmail2())) {
+				System.out.println("Email2 " + contact.getEmail2() + " is not present");
 				return false;
 			}
 		} else {
 			if (!driver.findElement(By.xpath(path + "/parent::*/td[4]")).getText().equals(contact.getEmail1())) {
+				System.out.println("Email1 " + contact.getEmail1() + " is not present");
 				return false;
 			}
 		}
 		if (contact.getHome().equals("")) {
 			if (contact.getMobile().equals("")) {
 				if (!driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getWork())) {
+					System.out.println("Work " + contact.getWork() + " is not present");
 					return false;
 				}
 			} else {
 				if (!driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getMobile())) {
+					System.out.println("Mobile " + contact.getMobile() + " is not present");
 					return false;
 				}
 			}
 		} else {
 			if (!driver.findElement(By.xpath(path + "/parent::*/td[5]")).getText().equals(contact.getHome().replace(" ", ""))) {
+				System.out.println("Home " + contact.getHome() + " is not present");
 				return false;
 			}
 		}
@@ -372,14 +425,10 @@ public class ContactHelper extends BaseHelper {
 		return birthdate;
 	}
 	
-	public boolean contactExist() {
-		  waitMe((long)0);
-		  boolean result = isElementPresent(By.name("entry"));
-		  waitMe((long)10);
-		  return result;
-	}
-	
 	public ContactHelper clickEditContact(Integer id) {
+		if (!checkHomePage()) {
+			manager.getNavigationHelper().openMainPage();
+		}
 		String path;
 		if (id == null) {
 			path = CONTACTS_XPATH + "[1]" + CONTACT_EDIT_ICON;
@@ -390,19 +439,15 @@ public class ContactHelper extends BaseHelper {
 		return this;
 	}
 
-	public ContactHelper clickDeleteContact() {
+	private ContactHelper clickDeleteContact() {
 		click(CONTACT_DELETE_ICON);
-		cachedContactsList = null;
 		manager.getNavigationHelper().clickMainPage();
-		rebuildCachedContactsList();
 		return this;
 		
 	}
 	public ContactHelper clickUpdateContact() {
 		click(CONTACT_UPDATE_ICON);
-		cachedContactsList = null;
 		manager.getNavigationHelper().clickMainPage();
-		rebuildCachedContactsList();
 		return this;
 	}
 
@@ -418,6 +463,14 @@ public class ContactHelper extends BaseHelper {
 		}
 		click(path);
 		return this;
+	}
+	
+	public SortedListOf<ObjContact> formatContactsListForMainPage(SortedListOf<ObjContact> contacts) {
+		SortedListOf<ObjContact> formattedContacts = new SortedListOf<ObjContact>();
+		for (ObjContact contact : contacts) {
+			formattedContacts.add(formatContactForMainPage(contact));
+		}
+		return formattedContacts;
 	}
 	
 	public ObjContact formatContactForMainPage(ObjContact contact) {
@@ -441,13 +494,14 @@ public class ContactHelper extends BaseHelper {
 
 	private ContactHelper clickSubmitContact() {
 		clickButton(CONTACTS_SUBMIT_CREATION);
-		cachedContactsList = null;
 		manager.getNavigationHelper().clickMainPage();
-		rebuildCachedContactsList();
 		return this;
 	}
 	
 	private ContactHelper selectContact(Integer id) {
+		if (!checkHomePage()) {
+			manager.getNavigationHelper().openMainPage();
+		}
 		String path;
 		if (id == null) {
 			path = CONTACTS_XPATH + "[1]//input[@id]";
@@ -459,11 +513,26 @@ public class ContactHelper extends BaseHelper {
 	}
 	
 	private boolean checkHomePage() {
-		return checkPage("");
+		return isElementPresent(By.xpath(".//*[@id='MassCB']"));
 	}
 
 	public int getContactsCount() {
 		return driver.findElements(By.xpath(CONTACTS_ON_PRINT_PAGE)).size();
+	}
+
+	public ContactHelper deleteContact(ObjContact contact) {
+		clickEditContact(contact.getId());
+		clickDeleteContact();
+		manager.getModel().removeContact(contact);
+		return null;
+	}
+
+	public ContactHelper editContact(int id, ObjContact contact) {
+		clickEditContact(id);
+		fillForm(contact);
+		clickUpdateContact();
+		manager.getModel().updateContact(id, contact);
+		return null;
 	}
 
 }

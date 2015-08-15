@@ -3,6 +3,7 @@ package com.example.tests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.example.fw.ObjContact;
 import com.example.utilits.SortedListOf;
 
 import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
@@ -16,25 +17,20 @@ public class ContactDeleteTests extends ContactsTests{
 		//main set up
 		TestBase temp = new TestBase();
 		temp.setUp();
-		addContacts(loadContactsFromFile(CONTACTS_XML_FILE));
+		inDataBase.insertContact(loadContactsFromFile(CONTACTS_XML_FILE));
+		currentContactsList = app.getModel().setContacts(inDataBase.listContacts()).getContacts();
 	}
-	//TODO Tests are failing. Need to fix
+
 	@Test
 	public void testDeleteContact () {
-		int index = app.getContactHelper().choosePosition();
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
 		
-		//get Contacts list before testing
-		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
-		
-		int idContact = app.getContactHelper().getIdContact(index);
-		app.getContactHelper()
-			.clickEditContact(idContact)
-			.clickDeleteContact();
-		
-		//get contacts list after testing
-		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+		ObjContact contact = beforeContactsList.getSome();
+		app.getContactHelper().deleteContact(contact);
 		
 		//Compare results
-		assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index)));
+		assertThat(currentContactsList, equalTo(beforeContactsList.without(contact)));
+		complicatedCheck();
 	}
 }

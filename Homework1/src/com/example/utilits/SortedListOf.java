@@ -65,6 +65,12 @@ public class SortedListOf<T extends Comparable<T>> extends ForwardingList<T> {
     newItems.list.remove(index);
     return newItems;
   }
+  
+  public boolean remove(T element) {
+	  boolean temp = super.remove(element);
+	  Collections.sort(list);
+	  return temp;
+  }
 
   public T getSome() {
     if (size() == 0) {

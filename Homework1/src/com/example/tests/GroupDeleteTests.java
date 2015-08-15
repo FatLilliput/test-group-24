@@ -3,6 +3,7 @@ package com.example.tests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.example.fw.ObjGroup;
 import com.example.utilits.SortedListOf;
 
 import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
@@ -16,55 +17,48 @@ public class GroupDeleteTests extends GroupsTests {
 		//main set up
 		TestBase temp = new TestBase();
 		temp.setUp();
-		addGroups(loadGroupsFromFile(GROUPS_XML_FILE));
+		inDataBase.insertGroups(loadGroupsFromFile(GROUPS_XML_FILE));
+		currentGroupsList = app.getModel().setGroups(inDataBase.listGroups()).getGroups();		
 	}
 	
 	@Test
 	public void deleteOneGroup () {
-		int index = app.getGroupHelper().choosePosition();
+		//save model before testing
+		SortedListOf<ObjGroup> beforeGroupsList = app.getModel().getGroupsCopy();
 		
-		//get list of groups before test
-		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList(); 
+		ObjGroup[] groups = {beforeGroupsList.getSome()};
 		
 		//delete group
-		app.getGroupHelper()
-			.selectGroup(index)
-			.deleteGroup();
-		
-		//get groups list after adding test group
-		SortedListOf<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
+		app.getGroupHelper().deleteGroups(groups);
 				
 		//Check that test group was correctly added
-		assertThat(afterGroupsList, equalTo(beforeGroupsList.without(index-1)));
+		assertThat(currentGroupsList, equalTo(beforeGroupsList.without(groups[0])));
+		
+		ComplicatedCheck();
 	}
 
 	@Test
 	public void deleteSeveralGroups () {
-		SortedListOf<ObjGroup> beforeGroupsList = app.getGroupHelper().getGroupList();
-		
-		int index1 = app.getGroupHelper().choosePosition();
-		int index2;
+		//save model before testing
+		SortedListOf<ObjGroup> beforeGroupsList = app.getModel().getGroupsCopy();
+				
+		//choose random groups
+		ObjGroup[] groups = new ObjGroup[2];
+		groups[0] = beforeGroupsList.getSome();
 		while (true) {
-			index2 = app.getGroupHelper().choosePosition();
-			 if(index1 != index2) {
+			groups[1] = beforeGroupsList.getSome();
+			 if(groups[0] != groups[1]) {
 			    break;
 			 }
 		}
 		
 		//delete group
-		app.getGroupHelper()
-			.selectGroup(index1)
-			.selectGroup(index2)
-			.deleteGroup();
+		app.getGroupHelper().deleteGroups(groups);
 		
-		//get groups list after adding test group
-		SortedListOf<ObjGroup> afterGroupsList = app.getGroupHelper().getGroupList();
-				
 		//Check that test group was correctly added
-		assertThat(
-				afterGroupsList, 
-				equalTo(beforeGroupsList.without(Integer.min((index1-1), (index2-1))).without(Integer.max((index1-1), (index2-1)) - 1))
-			);
+		assertThat(currentGroupsList, equalTo(beforeGroupsList.without(groups[0]).without(groups[1])));
+		
+		ComplicatedCheck();
 	}
 	
 }

@@ -2,7 +2,7 @@ package com.example.fw;
 
 //import org.openqa.selenium.By;
 
-public class NavigationHelper extends BaseHelper {
+public class NavigationHelper extends WebDriverBaseHelper {
 
 	public NavigationHelper(ApplicationManager manager) {
 		super(manager);
@@ -29,7 +29,7 @@ public class NavigationHelper extends BaseHelper {
 		
 	}
 
-	public void clicPrintAll() {
+	public void clickPrintAll() {
 		clickLinkText("print all");
 		
 	}

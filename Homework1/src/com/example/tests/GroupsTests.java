@@ -8,10 +8,17 @@ import java.util.List;
 import static com.example.tests.GroupsDataGenerator.generatedRandomGroups;
 import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+//import org.junit.BeforeClass;
+//import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 
+import com.example.fw.ObjGroup;
+import com.example.utilits.SortedListOf;
 public class GroupsTests extends TestBase{
-
+	
 	@DataProvider
 	public Iterator<Object[]> randomValidDataGenerator() {
 		return wrapGroupsForDataProvider(generatedRandomGroups(5)).iterator();
@@ -30,13 +37,15 @@ public class GroupsTests extends TestBase{
 		return wrapedGroups;
 	}
 
-	//TODO : This method should be replaced by method in ApplicationManager class adding group direct in database
-	//without interface implementation
-	public static void addGroups(List<ObjGroup> groups) {
-		for (ObjGroup group : groups) {
-			app.insertGroup(group);
-			app.getNavigationHelper().openGroupsPage();
+	protected void ComplicatedCheck() {
+		if (needToCheck()) {
+			if (app.getProperty("check.db").equals("true")) {
+				assertThat(currentGroupsList, equalTo(inDataBase.listGroups()));
+			}
+			if (app.getProperty("check.db").equals("true")) {
+				assertThat(currentGroupsList, equalTo(new SortedListOf<ObjGroup>(app.getGroupHelper().getUnsortedGroupList())));
+			}
 		}
-		
 	}
+
 }

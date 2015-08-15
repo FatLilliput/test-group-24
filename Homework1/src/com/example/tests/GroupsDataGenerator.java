@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.fw.ObjGroup;
 import com.thoughtworks.xstream.XStream;
 
 import static com.example.tests.TestBase.GetRandomParameter;
@@ -88,9 +89,9 @@ public class GroupsDataGenerator {
 		while (groupLine != null) {
 			String[] groupFields = groupLine.split(",");
 			ObjGroup group = new ObjGroup()
-				.withName(groupFields[0])
-				.withHeader(groupFields[1])
-				.withFooter(groupFields[2]);
+				.setName(groupFields[0])
+				.setHeader(groupFields[1])
+				.setFooter(groupFields[2]);
 			list.add(group);
 			groupLine = buffer.readLine();
 		}
@@ -103,9 +104,9 @@ public class GroupsDataGenerator {
 		
 		for (int i = 0; i < count; i++) {
 			ObjGroup group = new ObjGroup()
-				.withName  (GetRandomParameter("testGroupName"))
-				.withHeader(GetRandomParameter("test_group_header"))
-				.withFooter(GetRandomParameter("test_group_footer"))
+				.setName  (GetRandomParameter("testGroupName"))
+				.setHeader(GetRandomParameter("test_group_header"))
+				.setFooter(GetRandomParameter("test_group_footer"))
 			;
 			list.add(group);
 		}

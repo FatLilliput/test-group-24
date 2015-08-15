@@ -5,11 +5,16 @@
  */
 package com.example.tests;
 
+import java.util.List;
+
 import org.testng.annotations.Test;
 
+import com.example.fw.ObjContact;
+import com.example.fw.ObjGroup;
 import com.example.utilits.SortedListOf;
 
 import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
+import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -19,65 +24,86 @@ import static org.junit.Assert.assertThat;
 public class ContactCreationTests extends ContactsTests {
 
 	@Test(dataProvider = "validContactsDataFromFile")
-	public void testAddNonEmptyContact(ObjContact contact) throws Exception {
-		//get Contacts list before testing
-		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
+	public void testAddValidContact(ObjContact contact) throws Exception {
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
 		
+		//add contact
 		app.getContactHelper().addContact(contact);
-		
-		//get contacts list after testing
-		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
-				
-		//modify contact
-		contact = app.getContactHelper().formatContactForMainPage(contact);
 
 		//Compare results
-		assertThat(afterTestingContacts, equalTo(beforeTestingContacts.withAdded(contact)));
-
+		assertThat(currentContactsList, equalTo(beforeContactsList.withAdded(contact)));
+		complicatedCheck();
 	}
-	
+
 	@Test()
 	public void testContactsPages() throws Exception {
-		ObjContact contact = loadContactsFromFile(CONTACT).get(0);		
+		ObjContact contact = loadContactsFromFile(CONTACT1).get(0);	
 		app.getContactHelper().addContact(contact);
 		
-		//check the contacts birthday is present
-		assertThat(app.getContactHelper().isBirthdayPresent(contact), is(true));
+		if (app.getProperty("check.ui").equals("true")) {
+			//check the contacts birthday is present
+			assertThat(app.getContactHelper().isBirthdayPresent(contact), is(true));
 		
-		//check that contact is present in print list
-		assertThat(app.getContactHelper().isContactPresent(contact), is(true));
+			//check that contact is present in print list
+			app.getNavigationHelper().clickPrintAll();
+			assertThat(app.getContactHelper().isContactPresent(contact), is(true));
 		
-		//check that contact is present in phones list
-		assertThat(app.getContactHelper().isPhonePresent(contact), is(true));
-		
+			//check that contact is present in phones list
+			assertThat(app.getContactHelper().isPhonePresent(contact), is(true));
+		}
 	}
 	
 	@Test
-	public void testAddInvalidyContact() throws Exception {
-		//get Contacts list before testing
-		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
-		ObjContact contact = new ObjContact()
-			.setFirstName ("Name'")
-			.setLastName  ("Soname 1`")
-			.setAddress   ("123456 Contry City Address 1 1")
-			.setHome      ("1234567")
-			.setMobile    ("8 123 456 78 90")
-			.setWork      ("234657")
-			.setEmail1    ("e@ya.ru")
-			.setEmail2    ("e2@ya.ru")
-			.setBirthDay  ("1")
-			.setBirthMonth("January")
-			.setBirthYear ("1975")
-			.setAddress2  ("987654 Contry2 City2 Street2 2 22")
-			.setPhone2    ("Sweet Home 123")
-		;
+	public void testAddInvalidContact() throws Exception {
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
+		
+		//add contact with invalid parameters
+		ObjContact contact = loadContactsFromFile(INVALID_CONTACT).get(0);		
 		app.getContactHelper().addContact(contact);
 		
-		//get contacts list after testing
-		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
-				
 		//Compare results
-		assertThat(beforeTestingContacts, equalTo(afterTestingContacts));
-		assertThat(afterTestingContacts, not(contains(contact)));
+		assertThat(currentContactsList, equalTo(beforeContactsList));
+		assertThat(currentContactsList, not(contains(contact)));
+		complicatedCheck();
+	}
+	
+	@Test
+	public void testAddSimilarContacts() throws Exception {
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
+		
+		//init similar contacts parameters
+		List<ObjContact> contact = loadContactsFromFile(CONTACT);
+		
+		//add similar groups
+		inDataBase.insertContact(contact);
+		currentContactsList = app.getModel().setContacts(inDataBase.listContacts()).getContacts();
+		app.getContactHelper().addContact(contact.get(0));
+		
+		//Compare results
+		assertThat(currentContactsList, equalTo(beforeContactsList.withAdded(contact.get(0)).withAdded(contact.get(0))));
+		complicatedCheck();
+	}
+	
+	@Test()
+	public void testAddContactWithGroup() throws Exception {
+		//init group creation
+		List<ObjGroup> group = loadGroupsFromFile(GROUP);
+		inDataBase.insertGroups(group);
+		
+		//add contact with group
+		ObjContact contact = loadContactsFromFile(CONTACTS_2).get(1);
+		contact.setGroup(group.get(0).getName());
+		app.getContactHelper().addContact(contact);
+		
+		//get contact id
+		SortedListOf<ObjContact> listContacts = inDataBase.listContacts();
+		contact = listContacts.get(listContacts.size() - 1);
+		
+		//check that contact is present in phones list
+		if (app.getProperty("check.ui").equals("true"))
+			assertThat(app.getContactHelper().clickViewContact(contact.getId()).getGroup(), contains(group.get(0).getName()));
 	}
 }

@@ -2,9 +2,11 @@ package com.example.tests;
 
 import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
 import static com.example.tests.GroupsDataGenerator.loadGroupsFromFile;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -13,120 +15,145 @@ import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.example.fw.ObjContact;
+import com.example.fw.ObjGroup;
 import com.example.utilits.SortedListOf;
 
 public class ContactEditTests extends ContactsTests {
-
+	
 	@BeforeClass
 	public void setUp() throws Exception {
 		//main set up
 		TestBase temp = new TestBase();
 		temp.setUp();
-		addContacts(loadContactsFromFile(CONTACTS_XML_FILE));
+		inDataBase.insertContact(loadContactsFromFile(CONTACTS_XML_FILE));
+		currentContactsList = app.getModel().setContacts(inDataBase.listContacts()).getContacts();
 	}
 	
 	@Test
 	public void testEditPartOfContact () throws IOException {
-		//select testing contact
-		int idContact = app.getContactHelper().getIdContact(app.getContactHelper().choosePosition());
-		app.getContactHelper().clickEditContact(idContact);
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
 		
-		//save contact before testing
-		ObjContact beforeContact = app.getContactHelper().getContactParams();
-		
+		//select testing contact and edit it
+		ObjContact beforeContact = beforeContactsList.getSome();
 		ObjContact contact = loadContactsFromFile(CONTACT_EDIT_XML_FILE).get(0);
-		app.getContactHelper()
-			.fillForm(contact)
-			.clickUpdateContact();
+		app.getContactHelper().editContact(beforeContact.getId(), contact);
 		
 		//save contact after testing
-		app.getContactHelper().clickEditContact(idContact);
+		app.getContactHelper().clickEditContact(beforeContact.getId());
 		ObjContact afterContact = app.getContactHelper().getContactParams();
 		
-		//Compare results
-		beforeContact
-			.setEmail1    (contact.getEmail1())
-			.setEmail2    (contact.getEmail2())
-			.setBirthDay  (contact.getBirthDay())
-			.setBirthMonth(contact.getBirthMonth())
-		;
-		assertThat(beforeContact, equalTo(afterContact));
-		app.getContactHelper().clickViewContact(idContact);
+		if (app.getProperty("check.ui").equals("true")) {
+			//Compare results
+			beforeContact
+				.setEmail1    (contact.getEmail1())
+				.setEmail2    (contact.getEmail2())
+				.setBirthDay  (contact.getBirthDay())
+				.setBirthMonth(contact.getBirthMonth())
+				.setAddress   (contact.getEmail1())
+				.setAddress2  (contact.getEmail1())
+				;
+			assertThat(beforeContact, equalTo(afterContact));
+			app.getContactHelper().clickViewContact(beforeContact.getId());
 
-		//Check preview page
-		assertThat(app.getContactHelper().isContactPresent(afterContact), is(true));
+			//Check preview page
+			app.getNavigationHelper().clickPrintAll();
+			assertThat(app.getContactHelper().isContactPresent(afterContact), is(true));
+		}
 	}
 
-	//TODO Tests are failing. Need to fix
 	@Test(dataProvider = "randomValidContactDataGenerator")
 	public void testFullEditContact (ObjContact contact) {
-		int index = app.getContactHelper().choosePosition();
-		
-		//get Contacts list before testing
-		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
-		
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
+				
 		//select testing contact
-		int idContact = app.getContactHelper().getIdContact(index);
-		app.getContactHelper()
-			.clickEditContact(idContact)
-			.fillForm(contact)
-			.clickUpdateContact();
+		ObjContact beforeContact = beforeContactsList.getSome();
+		app.getContactHelper().editContact(beforeContact.getId(), contact);
 		
+		//modify contact and updating beforeTestingContacts
+		contact.setId(beforeContact.getId());
+				
 		//Check preview page 
-		app.getContactHelper().clickViewContact(idContact);
-		assertThat(app.getContactHelper().isContactPresent(contact), is(true));
-		
-		//get contacts list after testing
-		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
-						
-		//modify contact
-		contact = app.getContactHelper().formatContactForMainPage(contact);
+		app.getContactHelper().clickViewContact(contact.getId());
+		if (app.getProperty("check.ui").equals("true")) 
+			assertThat(app.getContactHelper().isContactPresent(contact), is(true));
 		
 		//Compare results
-		assertThat(afterTestingContacts, equalTo(beforeTestingContacts.without(index).withAdded(contact)));
+		complicatedCheck();
 	}
 
 	@Test
 	public void testInvalidEditContact () {
-		//get Contacts list before testing
-		SortedListOf<ObjContact> beforeTestingContacts= app.getContactHelper().getContactsList();
-		
-		//select testing contact
-		int idContact = app.getContactHelper().getIdContact(app.getContactHelper().choosePosition());
-		ObjContact contact = new ObjContact().setLastName("name'");
-		app.getContactHelper().clickEditContact(idContact);
-		
-		//save old contact params
-		ObjContact beforeContact = app.getContactHelper().getContactParams();
-		
-		app.getContactHelper()
-			.fillForm(contact)
-			.clickUpdateContact();
-		
-		//Check preview page 
-		app.getContactHelper().clickViewContact(idContact);
-		assertThat(app.getContactHelper().isContactPresent(beforeContact), is(true));
-		
-		//get contacts list after testing
-		SortedListOf<ObjContact> afterTestingContacts= app.getContactHelper().getContactsList();
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
 				
+		//select testing contact
+		ObjContact beforeContact = beforeContactsList.getSome();		
+		ObjContact contact = new ObjContact().setLastName("name'");
+		
+		//save old contact parameters
+		app.getContactHelper().editContact(beforeContact.getId(), contact);
+		
 		//Compare results
-		assertThat(beforeTestingContacts, equalTo(afterTestingContacts));
+		if (app.getProperty("check.ui").equals("true"))
+			assertThat(app.getContactHelper().clickViewContact(beforeContact.getId()).isContactPresent(beforeContact),
+						is(true));
+		
+		assertThat(currentContactsList, equalTo(beforeContactsList));
+		assertThat(currentContactsList, not(contains(contact)));
+		complicatedCheck();
 	}
 	
 	@Test
 	public void testAddContactToGroup () throws IOException {
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
+				
 		//add group to add contact
-		ObjGroup group = loadGroupsFromFile(GROUP_TO_ADD).get(0);
-		app.getGroupHelper().addGroup(group);
+		List<ObjGroup> group = loadGroupsFromFile(GROUP_TO_ADD);
+		inDataBase.insertGroups(group);
+		
 		//select testing contact and add it to the group
-		int idContact = app.getContactHelper().getIdContact(app.getContactHelper().choosePosition());
+		ObjContact contact = beforeContactsList.getSome();
 		app.getContactHelper()
-			.addContactToGroup(idContact, group.getName())
-			.clickViewContact(idContact);
-		List<String> contact_groups = app.getContactHelper().getGroup();
+			.addContactToGroup(contact.getId(), group.get(0).getName())
+			.clickViewContact(contact.getId());
 		
 		//check that there is wanted group on the page
-		assertThat(contact_groups, hasItem(group.getName()));
+		if (app.getProperty("check.ui").equals("true")) {
+			List<String> contact_groups = app.getContactHelper().getGroup();
+			assertThat(contact_groups, hasItem(group.get(0).getName()));
+		}
+	}
+	
+	@Test
+	public void testSimilarModfyingContacts() throws Exception {
+		//save model before testing
+		SortedListOf<ObjContact> beforeContactsList = app.getModel().getContactsCopy();
+		
+		//init similar contacts parameters
+		List<ObjContact> similarContact = loadContactsFromFile(CONTACT);
+		
+		//choose random contacts to edit
+		ObjContact[] contacts = new ObjContact[2];
+		contacts[0] = beforeContactsList.getSome();
+			while (true) {
+				contacts[1] = beforeContactsList.getSome();
+				if(contacts[0] != contacts[1]) {
+					break;
+				}
+			}
+			
+		//add similar groups
+		app.getContactHelper().editContact(contacts[0].getId(), similarContact.get(0));
+		app.getContactHelper().editContact(contacts[1].getId(), similarContact.get(0));
+		
+		//Compare results
+		assertThat(currentContactsList, equalTo(
+				beforeContactsList.without(contacts[0]).withAdded(similarContact.get(0))
+					.without(contacts[1]).withAdded(similarContact.get(0))));
+		complicatedCheck();
 	}
 }

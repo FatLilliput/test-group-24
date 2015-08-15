@@ -1,4 +1,4 @@
-package com.example.tests;
+package com.example.fw;
 
 public class ObjContact implements Comparable<ObjContact> {
 	private String firstName;
@@ -139,7 +139,8 @@ public class ObjContact implements Comparable<ObjContact> {
 			String birthMonth,
 			String birthYear,
 			String address2,
-			String phone2
+			String phone2,
+			int id
 	) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -154,6 +155,7 @@ public class ObjContact implements Comparable<ObjContact> {
 		this.birthYear = birthYear;
 		this.address2 = address2;
 		this.phone2 = phone2;
+		this.id = id;
 	}
 	
 	@Override
@@ -201,8 +203,8 @@ public class ObjContact implements Comparable<ObjContact> {
 				+ mobile + ", work=" + work + ", email1=" + email1
 				+ ", email2=" + email2 + ", birthDay=" + birthDay
 				+ ", birthMonth=" + birthMonth + ", birthYear=" + birthYear
-				+ ", group=" + group + ", address2=" + address2 + ", phone2="
-				+ phone2 + "]";
+				+ /*", group=" + group + */", address2=" + address2 + ", phone2="
+				+ phone2 + ", id=" + id + "]";
 	}
 	
 	@Override

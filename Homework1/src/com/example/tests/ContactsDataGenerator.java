@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.example.fw.ObjContact;
 import com.thoughtworks.xstream.XStream;
 
 public class ContactsDataGenerator {

@@ -2,12 +2,18 @@ package com.example.tests;
 
 import static com.example.tests.ContactsDataGenerator.generatedRandomContacts;
 import static com.example.tests.ContactsDataGenerator.loadContactsFromFile;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.testng.annotations.DataProvider;
+
+import com.example.fw.ObjContact;
+import com.example.utilits.SortedListOf;
 
 public class ContactsTests extends TestBase{
 
@@ -29,15 +35,17 @@ public class ContactsTests extends TestBase{
 		return wrappedContacts;
 	}
 
-	protected void addContacts(List<ObjContact> contacts) {
-		for (ObjContact contact : contacts) {
-			app.insertContact(contact);
-			app.getNavigationHelper().openMainPage();
+	protected void complicatedCheck() {
+		if (needToCheck()) {
+			if (app.getProperty("check.db").equals("true")) {
+				assertThat(currentContactsList, equalTo(inDataBase.listContacts()));
+			}
+			if (app.getProperty("check.ui").equals("true")) {
+				assertThat(
+					app.getContactHelper().formatContactsListForMainPage(app.getModel().getContactsCopy()), 
+					equalTo(new SortedListOf<ObjContact>(app.getContactHelper().getUnsortedContactsList())));
+			}
 		}
-		
-	}
-	protected void moveContactToGroup(ObjContact contact, ObjGroup group) {
-		app.moveContactToGroup(contact.getId(), group.getId());
 	}
 
 }

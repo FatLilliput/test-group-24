@@ -1,0 +1,17 @@
+<list>
+  <contact>
+    <firstName>Name'</firstName>
+    <lastName>Surname 1`</lastName>
+    <address>123456 Country City Address 1 1</address>
+    <home>1234567</home>
+    <mobile>8 123 456 78 90</mobile>
+    <work>234657</work>
+    <email1>e@ya.ru</email1>
+    <email2>e2@ya.ru</email2>
+    <birthDay>1</birthDay>
+    <birthMonth>January</birthMonth>
+    <birthYear>1975</birthYear>
+    <address2>987654 Country2 City2 Street2 2 22</address2>
+    <phone2>Sweet Home 123</phone2>
+  </contact>
+</list>

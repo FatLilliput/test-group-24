@@ -1,12 +1,28 @@
 <list>
+<contact>
+    <firstName>Name-1230196</firstName>
+    <lastName>Surname-001</lastName>
+    <address>Address 56788601
+    jhjkdsf</address>
+    <home></home>
+    <mobile>-816576022</mobile>
+    <work></work>
+    <email1></email1>
+    <email2>email-485869332@ya.ru</email2>
+    <birthDay>23</birthDay>
+    <birthMonth>December</birthMonth>
+    <birthYear>1989</birthYear>
+    <address2>Address 35386559</address2>
+    <phone2>-78994158</phone2>
+  </contact>
   <contact>
     <firstName>Name-520200196</firstName>
     <lastName>Surname-1797454973</lastName>
     <address>Address 56788601
     jhjkdsf</address>
     <home></home>
-    <mobile>-816576022</mobile>
-    <work></work>
+    <mobile></mobile>
+    <work>678788</work>
     <email1>@ya.ru</email1>
     <email2>email-485869332@ya.ru</email2>
     <birthDay>13</birthDay>
